@@ -1,0 +1,6 @@
+git-lfs
+git-delta
+tree
+wget
+pkg-config
+cmake

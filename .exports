@@ -1,0 +1,46 @@
+## Environment Variables
+
+# path to the currently selected xcode
+export XCODE_PATH=$(xcode-select -p)
+
+# adding paths to PATH
+export PATH=$PATH:~/scripts
+export PATH=$PATH:~/dotfiles
+export PATH=$PATH:~/.local/bin
+export PATH=$PATH:/Library/Frameworks/Python.framework/Versions/3.8/bin
+export PATH=$PATH:/Users/yair/Library/Python/3.8/bin
+export PATH=$PATH:/Library/Frameworks/Python.framework/Versions/3.9/bin
+export PATH=$PATH:/Users/yair/Library/Python/3.9/bin
+export PATH=$PATH:/opt/brew/opt/ccache/libexec
+export PATH=$PATH:$XCODE_PATH/Toolchains/XcodeDefault.xctoolchain/usr/local/bin # clang-format path
+
+# default git repos path
+export REPOS_PATH="$HOME/repos"
+mkdir -p $REPOS_PATH &>/dev/null
+
+# Set the exact colors (fb - forground+background) of every type of file
+# Set LSCOLORS (FreeBSD / macOS).
+#
+#  * `ls` displays colors if the `-G` option is passed or if
+#    the `CLICOLOR` environment variable is set.
+#
+#  * The actual colors are configured through the `LSCOLORS`
+#    environment variable (built-in defaults are used if this
+#    variable is not set).
+# export LSCOLORS=gxfxcxdxbxegedabagacad  # old colors
+LSCOLORS=""
+LSCOLORS+="gx" # Directory
+LSCOLORS+="fx" # Symbolic link
+LSCOLORS+="cx" # Socket
+LSCOLORS+="dx" # Pipe
+LSCOLORS+="cx" # Executable
+LSCOLORS+="eg" # Block special
+LSCOLORS+="ed" # Character special
+LSCOLORS+="ab" # Executable with setuid bit set
+LSCOLORS+="ag" # Executable with setgid bit set
+LSCOLORS+="cc" # Directory writable to others, with sticky bit
+LSCOLORS+="bd" # Directory writable to others, without sticky bit
+export LSCOLORS
+
+# Set colors in CLI to be Active
+export CLICOLOR=1

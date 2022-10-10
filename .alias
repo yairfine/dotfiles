@@ -1,0 +1,93 @@
+## Define Aliases
+
+# Recursively pull git repositiory with all sub-packages
+alias gitpurge="git clean -xfd; git submodule foreach --recursive git clean -xfd; git reset --hard; git submodule foreach --recursive git reset --hard; git submodule update --init --recursive"
+
+# Print the git graph of the current repository
+alias gitgraph="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'--abbrev-commit --date=relative"
+
+# SHA256 check-sum
+alias sha256="shasum -a 256"
+
+# edit text files
+alias edit="open -a 'TextMate'"
+
+# open zsh config file for edits
+alias zshc="code ~/.zshrc"
+
+# Find a filename in some sub-dir in the current working directory (excluding in git repos)
+alias ff='find . | grepi -v ./.git/ | grepi'
+
+# grep with color / highlighting the findings
+alias grepi='grep --colour -i'
+alias grep='grep --colour -i'
+
+# save to clipboard
+alias clip='pbcopy'
+
+# ls -l
+alias ll='ls -lhF'
+
+# copy current working directory path to clipboard
+alias cwd="pwd | pbcopy; echo copied to clipboard: $(pwd)"
+
+# clean python cache files
+alias clean-pyc="find . -name '*.pyc' -exec rm -f {} +;	find . -name '*.pyo' -exec rm -f {} +;	find . -name '*~' -exec rm -f {} +;	find . -name '__pycache__' -exec rm -fr {} +; find . -name '.pytest_cache' -exec rm -rf {} +; find . -name '.mypy_cache' -exec rm -rf {} +"
+
+### Go to places
+alias apps="cd /Applications"
+alias doc="cd ~/Documents"
+alias desk="cd ~/Desktop"
+alias dl="cd ~/Downloads"
+alias scr="cd ~/scripts"
+alias repos="cd $REPOS_PATH"
+
+# mkdir and copy recursive (parents=True)
+alias mkdirr="mkdir -p"
+alias cpr="cp -pR"
+
+alias ..="cd .."
+
+alias less="less -i"
+
+alias ls="ls -G -b"
+# alias ll="ls -lah"
+alias lat="ls -latr"
+alias latr="ls -lat"
+alias llnl="ll | nl"
+
+alias df="df -kH"
+
+alias top="top -o cpu"
+
+alias killremote="killall ARDAgent ; killall \"Remote Desktop\" ; killall \"Screen Sharing\" ; sudo killall screensharingd"
+
+alias psef="ps -ef | grep -i "
+
+alias logos="/usr/bin/log"
+alias logos2="\$XCODE_PATH/Platforms/MacOSX.platform/Developer/SDKs/iOSHostAdditions*sdk/usr/local/bin/logdump"
+
+alias getmod="stat -f \"%A %N\"" # print mode (file permissions) of file
+
+alias tarlb="tar --use-compress-program=lbzip2"
+alias tarlbu="tar --use-compress-program=lbunzip2"
+alias tarpg="tar --use-compress-program=pigz"
+alias tarpgu="tar --use-compress-program=unpigz"
+
+alias greps="/usr/bin/grep --colour"
+alias grep="grep --colour -i"
+alias rgrep="grep -r"
+alias rgrepsrc="rgrep --include=*.cpp --include=*.h --include=*.c --include=*.hpp --include=*.m --include=*.mm --include=*.mk --include=*.v --include=Makefile"
+alias ag2="ag --depth 0"
+alias greprl="grep -i -r -l"
+alias ghist="history | grep"
+
+alias wget2="wget -r -np -nc"
+
+alias fan="smcif -r F0Ac F1Ac"
+
+alias dockfix="defaults write com.apple.dock ResetLaunchPad -bool true; killall Dock"
+
+alias rcl="remotectl list"
+
+alias reload="source ~/.zshrc ;"
