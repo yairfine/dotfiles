@@ -166,5 +166,6 @@ BreakBeforeBraces: Allman
 ---
 Language:        ObjC
 BreakBeforeBraces: Attach
-
-
+---
+Language:        Proto
+BreakBeforeBraces: Attach
