@@ -8,9 +8,9 @@ export PATH=$PATH:~/scripts
 export PATH=$PATH:~/dotfiles
 export PATH=$PATH:~/.local/bin
 export PATH=$PATH:/Library/Frameworks/Python.framework/Versions/3.8/bin
-export PATH=$PATH:/Users/yair/Library/Python/3.8/bin
+export PATH=$PATH:$HOME/Library/Python/3.8/bin
 export PATH=$PATH:/Library/Frameworks/Python.framework/Versions/3.9/bin
-export PATH=$PATH:/Users/yair/Library/Python/3.9/bin
+export PATH=$PATH:$HOME/Library/Python/3.9/bin
 export PATH=$PATH:/opt/brew/opt/ccache/libexec
 export PATH=$PATH:$XCODE_PATH/Toolchains/XcodeDefault.xctoolchain/usr/local/bin # clang-format path
 
