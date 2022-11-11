@@ -92,7 +92,7 @@ IncludeIsMainSourceRegex: ''
 IndentCaseLabels: false
 IndentCaseBlocks: false
 IndentGotoLabels: true
-IndentPragmas:   false
+# IndentPragmas:   false
 IndentPPDirectives: None
 IndentExternBlock: AfterExternBlock
 IndentRequires:  false
@@ -169,3 +169,4 @@ BreakBeforeBraces: Attach
 ---
 Language:        Proto
 BreakBeforeBraces: Attach
+IndentWidth:     2
