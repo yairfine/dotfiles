@@ -49,18 +49,17 @@
 [alias]
     st = status
     cm = commit
-    cmm = commit -m
     co = checkout
     br = branch
     cl = clone -v --progress --recursive
 
-    amend = commit --amend
     conf = config --global -e # edit global config (this file)
-    last = log -1 HEAD --stat
     gl = config --global --list
     alias = config --get-regexp '^alias'
-    unstage = restore --staged --progress
+    last = log -1 HEAD --stat
     graph = log --graph --oneline --decorate --all 
+    amend = commit --amend
+    unstage = restore --staged --progress
     purge = ! git clean -xfd && git submodule foreach --recursive git clean -xfd && git reset --hard && git submodule foreach --recursive git reset --hard && git submodule update --init --recursive
     cleanlfs = lfs prune
     diffbase = diff $1...$2 
