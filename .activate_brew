@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# Set PATH, MANPATH, etc., for Homebrew.
+eval "$( /opt/homebrew/bin/brew shellenv 2>/dev/null )"  # Apple Silicon
+eval "$( /usr/local/bin/brew shellenv 2>/dev/null )"     # Intel Chip
