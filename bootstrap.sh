@@ -10,8 +10,8 @@ copy_dotfiles() {
     if git config --get-regexp "user.email" &> /dev/null; then
         has_email=true
     fi;
-    GIT_USER=$(git config --get-regexp "user.name" | sed 's/^..........//')
-    GIT_EMAIL=$(git config --get-regexp "user.email" | sed 's/^...........//')
+    GIT_USER=$(git config --global --get-regexp "user.name" | sed 's/^..........//')
+    GIT_EMAIL=$(git config --global --get-regexp "user.email" | sed 's/^...........//')
 
     for file in $DOT_FILES_DIR/.{zshrc,exports,alias,functions,zsh_prompt,gitconfig,clang-format}; do
         [ -r "$file" ] && [ -f "$file" ] && cp -v "$file" $HOME
