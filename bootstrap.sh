@@ -78,5 +78,12 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     "$DOT_FILES_DIR/installations.sh"
 fi;
 
+chmod u+x "$DOT_FILES_DIR/install_casks.sh"
+read -p "Install brew cask apps packages? (y/N) ";
+echo "";
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    "$DOT_FILES_DIR/install_casks.sh"
+fi;
+
 echo "Done, now run the following command:"
 echo "source $HOME/.zshrc"
