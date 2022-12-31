@@ -3,4 +3,3 @@ pandas
 matplotlib
 mypy
 rich
-meson
