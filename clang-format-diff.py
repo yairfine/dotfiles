@@ -29,6 +29,7 @@ import difflib
 import re
 import subprocess
 import sys
+import shutil
 
 if sys.version_info.major >= 3:
     from io import StringIO
@@ -58,12 +59,23 @@ def xcode_path() -> str:
 
 
 def clang_format_bin_path() -> str:
-    clang_format_bin = f'{xcode_path()}/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/local/bin/clang-format'
+    clang_format_xcode = f'{xcode_path()}/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/local/bin/clang-format'
+    clang_format_bin = shutil.which('clang-format')
 
-    if not Path(clang_format_bin).is_file():
+    if Path(clang_format_xcode).is_file():
+        clang_format = clang_format_xcode
+    elif clang_format_bin:
+        clang_format = clang_format_bin
+    else:
         raise FileNotFoundError('No clang-format binary found in system')
+    
+    return clang_format
 
-    return clang_format_bin
+def default_arg_clang_format() -> str:
+    try:
+        return clang_format_bin_path()
+    except FileNotFoundError as e:
+        return "No-default-clang-format-found"
 
 class RawTextArgumentDefaultsHelpFormatter(
         argparse.ArgumentDefaultsHelpFormatter,
@@ -97,7 +109,7 @@ def main():
                         'fallback in case clang-format is invoked with '
                         '--style=file, but can not find the .clang-format '
                         'file to use.')
-    parser.add_argument('--binary', default=clang_format_bin_path(),
+    parser.add_argument('--binary', default=default_arg_clang_format(),
                         help='location of binary to use for clang-format')
     args = parser.parse_args()
 
