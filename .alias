@@ -19,8 +19,9 @@ alias zshc="code ~/.zshrc"
 alias ff='find . | grepi -v ./.git/ | grepi'
 
 # grep with color / highlighting the findings
-alias grepi='grep --colour -i'
 alias grep='grep --colour'
+alias grepi='grep --colour -i'
+
 
 # save to clipboard
 alias clip='pbcopy'
