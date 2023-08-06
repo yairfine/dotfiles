@@ -1,0 +1,9 @@
+# expand nested alias and functions:
+xtrace() {
+    local eval_cmd
+    printf -v eval_cmd '%q ' "${@}"
+    { set -x
+      eval "${eval_cmd}"
+    } 2>&1 | grep '^++'
+    return "${PIPESTATUS[0]}"
+}

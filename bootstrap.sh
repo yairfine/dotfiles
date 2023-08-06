@@ -13,7 +13,7 @@ copy_dotfiles() {
     GIT_USER=$(git config --global --get-regexp "user.name" | sed 's/^..........//')
     GIT_EMAIL=$(git config --global --get-regexp "user.email" | sed 's/^...........//')
 
-    for file in $DOT_FILES_DIR/.{zshrc,exports,alias,functions,zsh_prompt,gitconfig,clang-format,activate_brew}; do
+    for file in $DOT_FILES_DIR/.{bashrc,zshrc,exports,alias,functions,zsh_prompt,bash_prompt,gitconfig,clang-format,activate_brew,bash_specific}; do
         [ -r "$file" ] && [ -f "$file" ] && cp -v "$file" $HOME
     done;
     unset file;
