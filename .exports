@@ -1,11 +1,14 @@
 ## Environment Variables
+# default git repos path
+export REPOS_PATH="$HOME/repos"
+mkdir -p $REPOS_PATH &>/dev/null
 
 # path to the currently selected xcode
 export XCODE_PATH=$(xcode-select -p)
 
 # adding paths to PATH
-export PATH=$PATH:~/scripts
-export PATH=$PATH:~/dotfiles
+export PATH=$PATH:$REPOS_PATH/dotfiles
+export PATH=$PATH:$HOME/dotfiles
 export PATH=$PATH:~/.local/bin
 export PATH=$PATH:/Library/Frameworks/Python.framework/Versions/3.8/bin
 export PATH=$PATH:$HOME/Library/Python/3.8/bin
@@ -14,9 +17,6 @@ export PATH=$PATH:$HOME/Library/Python/3.9/bin
 export PATH=$PATH:/opt/brew/opt/ccache/libexec
 export PATH=$PATH:$XCODE_PATH/Toolchains/XcodeDefault.xctoolchain/usr/local/bin # clang-format path
 
-# default git repos path
-export REPOS_PATH="$HOME/repos"
-mkdir -p $REPOS_PATH &>/dev/null
 
 # Set the exact colors (fb - forground+background) of every type of file
 # Set LSCOLORS (FreeBSD / macOS).
