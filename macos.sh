@@ -23,6 +23,9 @@ sudo nvram SystemAudioVolume=" "
 # Open repos in Sourcetree app as tabs within a single window:
 defaults write -app SourceTree AppleWindowTabbingMode -string "always"
 
+# Allow keyboard hold and repeat key
+defaults write -g ApplePressAndHoldEnabled -bool false
+
 # Disable transparency in the menu bar and elsewhere on Yosemite
 # defaults write com.apple.universalaccess reduceTransparency -bool true
 
