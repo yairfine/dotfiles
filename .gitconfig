@@ -52,6 +52,7 @@
     co = checkout
     br = branch
     cl = clone -v --progress --recursive
+    cp = cherry-pick
 
     conf = config --global -e # edit global config (this file)
     gl = config --global --list
