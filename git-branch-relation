@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# check the relation between two branches in the commits graph
+if [ $# -eq 2 ]; then
+    FIRST_BRANCH=$1
+    SECOND_BRANCH=$2
+else
+    echo "Usage: git-branch-relation <first_branch> <second_branch>"
+    echo $#
+    exit
+fi
+
+if ! git rev-parse --quiet --verify $FIRST_BRANCH &>/dev/null; then
+    echo "Branch '$FIRST_BRANCH' does not exist"
+    exit
+fi
+
+if ! git rev-parse --quiet --verify $SECOND_BRANCH &>/dev/null; then
+    echo "Branch '$SECOND_BRANCH' does not exist"
+    exit
+fi
+
+REV_LIST_OUT=$(git rev-list --left-right --count $FIRST_BRANCH...$SECOND_BRANCH)
+
+AHEAD=$(echo "$REV_LIST_OUT"  | awk '{print $1}')
+BEHIND=$(echo "$REV_LIST_OUT" | awk '{print $2}')
+
+echo $FIRST_BRANCH is ahead $AHEAD, behind $BEHIND commits of $SECOND_BRANCH
