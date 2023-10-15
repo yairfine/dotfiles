@@ -66,6 +66,7 @@
     cleanlfs = lfs prune
     diffbase = diff $1...$2 
     coo = "!f() { git checkout -b $1 --track origin/$1; }; f"
+    cop = "!f() { git checkout $* && git pull; }; f"
     softmerge = ! git merge $1 --no-ff --no-commit
     pushtags = ! git push origin $(git symbolic-ref --short HEAD) --tags
     # can use `git format` with `--staged` and/or `--function-context` flags
