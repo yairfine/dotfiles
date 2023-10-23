@@ -25,4 +25,12 @@ REV_LIST_OUT=$(git rev-list --left-right --count $FIRST_BRANCH...$SECOND_BRANCH)
 AHEAD=$(echo "$REV_LIST_OUT"  | awk '{print $1}')
 BEHIND=$(echo "$REV_LIST_OUT" | awk '{print $2}')
 
+MERGE_BASE=$(git merge-base $FIRST_BRANCH $SECOND_BRANCH)
+# %C(auto) is used to enable automatic colorization. Git will choose appropriate colors based on the context.
+# %H displays the commit hash.
+# %d displays decorations (branches and tags).
+# %s displays the commit subject (the first line of the commit message).
+MERGE_BASE_DECORATED=$(git log -1 --format='%C(auto)%H%d %C(auto)%s' $MERGE_BASE)
+
 echo $FIRST_BRANCH is ahead $AHEAD, behind $BEHIND commits of $SECOND_BRANCH
+echo The merge base is $MERGE_BASE_DECORATED
