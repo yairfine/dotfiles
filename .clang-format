@@ -7,12 +7,12 @@ AlignConsecutiveMacros: true
 AlignConsecutiveAssignments: false
 AlignConsecutiveBitFields: true
 AlignConsecutiveDeclarations: false
-AlignEscapedNewlines: Left  # was 'Right' at the beginning
+AlignEscapedNewlines: Left
 AlignOperands:   Align
-AlignTrailingComments: true
+AlignTrailingComments: true  # OverEmptyLines 1 (clang-format >= 16)
 AllowAllArgumentsOnNextLine: true
 AllowAllConstructorInitializersOnNextLine: true
-AllowAllParametersOfDeclarationOnNextLine: true
+AllowAllParametersOfDeclarationOnNextLine: false
 AllowShortEnumsOnASingleLine: true
 AllowShortBlocksOnASingleLine: Never   # blocks of loops
 AllowShortCaseLabelsOnASingleLine: false  # switch-case
@@ -52,11 +52,11 @@ BreakBeforeConceptDeclarations: true
 BreakBeforeBraces: Allman # define separated for each language at the bottom 
 BreakBeforeInheritanceComma: false
 BreakInheritanceList: BeforeColon
-BreakBeforeTernaryOperators: true
+BreakBeforeTernaryOperators: false
 BreakConstructorInitializersBeforeComma: false
 BreakConstructorInitializers: BeforeColon
 BreakAfterJavaFieldAnnotations: false
-BreakStringLiterals: true
+BreakStringLiterals: false
 ColumnLimit:     0  # max line width (wrapping around) (A column limit of 0 means that there is no column limit. In this case, clang-format will respect the input’s line breaking decisions within statements unless they contradict other rules.)
 CommentPragmas:  '^ IWYU pragma:'
 CompactNamespaces: false
@@ -101,7 +101,7 @@ IndentWrappedFunctionNames: false
 InsertTrailingCommas: None
 JavaScriptQuotes: Leave
 JavaScriptWrapImports: true
-KeepEmptyLinesAtTheStartOfBlocks: true
+KeepEmptyLinesAtTheStartOfBlocks: false
 MacroBlockBegin: ''
 MacroBlockEnd:   ''
 MaxEmptyLinesToKeep: 1
