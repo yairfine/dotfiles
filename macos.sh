@@ -928,28 +928,25 @@ defaults write com.apple.dock showAppExposeGestureEnabled -bool true
 # Kill affected applications                                                  #
 ###############################################################################
 
-# for app in "Activity Monitor" \
-# 	"Address Book" \
-# 	"Calendar" \
-# 	"cfprefsd" \
-# 	"Contacts" \
-# 	"Dock" \
-# 	"Finder" \
-# 	"Google Chrome Canary" \
-# 	"Google Chrome" \
-# 	"Mail" \
-# 	"Messages" \
-# 	"Opera" \
-# 	"Photos" \
-# 	"Safari" \
-# 	"SizeUp" \
-# 	"Spectacle" \
-# 	"SystemUIServer" \
-# 	"Terminal" \
-# 	"Transmission" \
-# 	"Tweetbot" \
-# 	"Twitter" \
-# 	"iCal"; do
-# 	killall "${app}" &> /dev/null
-# done
+for app in "Activity Monitor" \
+	"Address Book" \
+	"Calendar" \
+	"Contacts" \
+	"Dock" \
+	"Finder" \
+	"Mail" \
+	"Messages" \
+	"Photos" \
+	"Safari" \
+	"System Settings" \
+	"SizeUp" \
+	"Spectacle" \
+	"Sourcetree" \
+	"SystemUIServer" \
+	"Terminal" \
+	"Transmission" \
+	"iCal"; do
+	killall "${app}" &> /dev/null
+done
+
 echo "Done. Note that some of these changes require a logout/restart to take effect."
