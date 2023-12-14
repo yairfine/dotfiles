@@ -73,12 +73,12 @@ On_IWhite='\033[0;107m'   # White
 
 unset PS1
 PS1+=""
-PS1+="$Red[$Color_Off"             # [
+# PS1+="$Red[$Color_Off"           # [
 PS1+="\[\e[38;5;172m\]\u\[\e[m\]"  # user
 PS1+="@"                           # @
 PS1+="\[\e[38;5;153m\]\h\[\e[m\]"  # \h
 PS1+=" "                           # space
-PS1+="\[\e[38;5;214m\]\W\[\e[m\]"  # Where (current dir)
-PS1+="$Red]$Color_Off"             # ]
+PS1+="$Red\w$Color_Off"            # \W - current dir | \w - full path.
+# PS1+="$Red]$Color_Off"           # ]
 PS1+="\\$ "                        # %
 export PS1
