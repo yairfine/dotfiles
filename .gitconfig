@@ -54,6 +54,7 @@
     br = branch
     cl = clone --verbose --progress --recurse-submodules --shallow-submodules
     chp = cherry-pick -n
+    grep = grep --line-number
 
     conf = config --global --edit # edit global config (this file)
     gl = config --global --list
