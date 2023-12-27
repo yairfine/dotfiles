@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# check the relation between two branches in the commits graph
+# check the relation between two references (branches/tags/commits) in the commits graph
 if [ $# -eq 2 ]; then
     FIRST_BRANCH=$1
     SECOND_BRANCH=$2
 else
-    echo "Usage: git-branch-relation <first_branch> <second_branch>"
+    echo "Usage: git ref-rel <first_branch> <second_branch>"
     echo $#
     exit
 fi
