@@ -46,6 +46,7 @@
 
 [alias]
     s = status --short
+    sb = status --short --branch
     st = status
     cm = commit
     co = checkout
