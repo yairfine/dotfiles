@@ -114,15 +114,18 @@ ObjCBlockIndentWidth: 2
 ObjCBreakBeforeNestedBlockParam: true
 ObjCSpaceAfterProperty: false
 ObjCSpaceBeforeProtocolList: true
-PenaltyBreakAssignment: 2
-PenaltyBreakBeforeFirstCallParameter: 19
-PenaltyBreakComment: 300
-PenaltyBreakFirstLessLess: 120
-PenaltyBreakString: 1000
-PenaltyBreakTemplateDeclaration: 10
-PenaltyExcessCharacter: 1000000
-PenaltyReturnTypeOnItsOwnLine: 200
-PenaltyIndentedWhitespace: 0
+# Penalties: Higher penalty values discourage line breaks, while lower values encourage line breaks
+PenaltyBreakAssignment: 20                  # (clang-format 5)    The penalty for breaking around an assignment operator
+PenaltyBreakBeforeFirstCallParameter: 19    # (clang-format 3.7)  The penalty for breaking a function call after call(
+PenaltyBreakComment: 300                    # (clang-format 3.7)  The penalty for each line break introduced inside a comment
+PenaltyBreakFirstLessLess: 120              # (clang-format 3.7)  The penalty for breaking before the first <<
+# PenaltyBreakOpenParenthesis: 100          # (clang-format 14)   The penalty for breaking after (
+# PenaltyBreakScopeResolution: 1000000      # (clang-format 18)   The penalty for breaking after ::
+PenaltyBreakString: 1000                    # (clang-format 3.7)  The penalty for each line break introduced inside a string literal
+PenaltyBreakTemplateDeclaration: 10         # (clang-format 7)    The penalty for breaking after template declaration
+PenaltyExcessCharacter: 1000000             # (clang-format 3.7)  The penalty for each character outside of the column limit
+PenaltyReturnTypeOnItsOwnLine: 200          # (clang-format 3.7)  Penalty for putting the return type of a function onto its own line
+PenaltyIndentedWhitespace: 0                # (clang-format 12)   Penalty for each character of whitespace indentation (counted relative to leading non-whitespace column)
 PointerAlignment: Right
 ReflowComments:  true
 SeparateDefinitionBlocks: Always
