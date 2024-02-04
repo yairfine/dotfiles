@@ -51,6 +51,7 @@
     cm = commit
     co = checkout
     br = branch
+    brs = branch --sort=-committerdate
     cl = clone --verbose --progress --recurse-submodules --shallow-submodules
     chp = cherry-pick -n
     grep = grep --line-number
