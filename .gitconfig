@@ -65,7 +65,7 @@
     gl = config --global --list
     alias = config --get-regexp '^alias'
     last = log -1 HEAD --stat
-    graph = log --graph --oneline --decorate --branches --remotes --tags HEAD
+    graph = log --graph --oneline --decorate --branches --remotes --tags
     amend = commit --amend
     pushf = push --force-with-lease
     unstage = restore --staged --progress
