@@ -23,6 +23,11 @@
 [delta]
     navigate = true
 
+# remember how you’ve resolved a hunk conflict so that the next time it sees
+# the same conflict, Git can automatically resolve it for you
+[rerere]  # reuse recorded resolution
+    enabled = true
+
 [http]
     sslVerify = false
 [filter "lfs"]
