@@ -27,6 +27,9 @@
 # the same conflict, Git can automatically resolve it for you
 [rerere]  # reuse recorded resolution
     enabled = true
+[column]
+    branch = auto
+    tag = auto
 
 [http]
     sslVerify = false
