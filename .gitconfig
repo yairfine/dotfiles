@@ -72,6 +72,7 @@
     amend = commit --amend
     pushf = push --force-with-lease
     unstage = restore --staged --progress
+    first-push = push -u origin HEAD
     reseth = reset --hard "@{upstream}"  # note: the escaping "" is for powershell environment
     pruning = ! git fetch origin --prune && git gc && git prune && git prune-packed
     purge = ! git clean -xfd && git submodule foreach --recursive git clean -xfd && git reset --hard && git submodule foreach --recursive git reset --hard && git submodule update --init --recursive
