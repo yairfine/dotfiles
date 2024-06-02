@@ -52,6 +52,10 @@
 [mergetool "vscode"]
     cmd = code --wait $MERGED
 
+[pretty]
+    twolines = format: %C(auto)%h%C(reset)%C(auto)%d%C(reset) %C(white)%s%C(reset)  %C(dim white)%an%C(reset) %n
+    threelines = format: %C(auto)%h%C(reset)%C(auto)%d%C(reset) %n %C(white)%s%C(reset)  %C(dim white)%an%C(reset) %n
+
 [alias]
     s = status --short
     sb = status --short --branch
