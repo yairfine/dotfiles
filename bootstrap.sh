@@ -63,6 +63,17 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     "$DOT_FILES_DIR/macos.sh"
 fi;
 
+
+read -p "Install Homebrew? (y/N) ";
+echo "";
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    echo '' >> $HOME/.zshrc
+    echo '# Set PATH, MANPATH, etc., for Homebrew.' >> $HOME/.zshrc
+    echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> $HOME/.zshrc
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+fi;
+
 chmod u+x "$DOT_FILES_DIR/installations.sh"
 read -p "Install brew and pip packages? (y/N) ";
 echo "";
