@@ -20,7 +20,7 @@ alias ff='find . | grepi -v ./.git/ | grepi'
 
 # grep with color / highlighting the findings
 alias grepi='grep --colour -i'
-alias grep='grep --colour -i'
+alias grep='grep --colour'
 
 # save to clipboard
 alias clip='pbcopy'
@@ -74,8 +74,6 @@ alias tarlbu="tar --use-compress-program=lbunzip2"
 alias tarpg="tar --use-compress-program=pigz"
 alias tarpgu="tar --use-compress-program=unpigz"
 
-alias greps="/usr/bin/grep --colour"
-alias grep="grep --colour -i"
 alias rgrep="grep -r"
 alias rgrepsrc="rgrep --include=*.cpp --include=*.h --include=*.c --include=*.hpp --include=*.m --include=*.mm --include=*.mk --include=*.v --include=Makefile"
 alias ag2="ag --depth 0"
