@@ -18,6 +18,8 @@
 [merge]
     tool = vscode
     conflictstyle = diff3
+[sequence]
+    editor = interactive-rebase-tool
 [interactive]
     diffFilter = delta --color-only
 [delta]
