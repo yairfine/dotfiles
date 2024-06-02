@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# merge all remote tracking branches into local branches (Fast-Forward only)
+# Supply -f flag to also update all remote tracking branches before merge
+
+if [ "$1" = "-f" ]; then
+    git fetch
+fi
+
+git for-each-ref --format='git fetch . %(upstream):%(refname)' refs/heads/ | sh
