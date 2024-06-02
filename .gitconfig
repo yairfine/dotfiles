@@ -69,4 +69,5 @@
     # can use `git format` with `--staged` and/or `--function-context` flags
     format = "!f() { git diff -U0 --no-color --relative $* | clang-format-diff.py -p1 -v -i; }; f"
     id = ! git config user.name && git config user.email
+    tree = ls-tree -r
     
