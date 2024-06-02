@@ -4,3 +4,4 @@ tree
 wget
 pkg-config
 cmake
+meson
