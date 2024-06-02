@@ -3,7 +3,7 @@
 # check whether `git merge` from <branch_name> to current checkout branch is possible
 
 if [ "$1" = "" ]; then
-    echo "Usage: mergecheck <branch_name>"
+    echo "Usage: git check-merge <branch_name>"
     exit
 else
     BRANCH_TO_MERGE=$1
