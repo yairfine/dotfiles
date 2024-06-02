@@ -88,7 +88,7 @@
     diffbase = diff $1...$2 
     coo = "!f() { git checkout -b $1 --track origin/$1; }; f"
     cop = "!f() { git checkout $* && git pull; }; f"
-    cotag = "!checkout_tag() { if [[ $(git tag --list | grep -i $1 | wc -l) -eq 1 ]]; then git tag --list | grep -i $1 | xargs git checkout ; else echo 'Invalid tag[s]:'; git tag --list | grep -i $1; fi }; checkout_tag"
+    cotag = "!checkout_tag() { if [[ $(git tag --list | grep -i $1 | wc -l) -eq 1 ]]; then git tag --list | grep -i $1 | xargs -I {} sh -c 'echo {}; git checkout {}' ; else echo 'Invalid tag[s]:'; git tag --list | grep -i $1; fi }; checkout_tag"
     softmerge = ! git merge $1 --no-ff --no-commit
     pushtags = ! git push origin $(git symbolic-ref --short HEAD) --tags
     # can use `git format` with `--staged` and/or `--function-context` flags
