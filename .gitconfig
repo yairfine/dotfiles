@@ -69,6 +69,7 @@
     cl = clone --verbose --progress --recurse-submodules --shallow-submodules
     chp = cherry-pick
     grep = grep --line-number
+    ir = rebase --interactive --rebase-merges --autosquash
 
     conf = config --global --edit # edit global config (this file)
     gl = config --global --list
