@@ -13,7 +13,7 @@ copy_dotfiles() {
     GIT_USER=$(git config --global --get-regexp "user.name" | sed 's/^..........//')
     GIT_EMAIL=$(git config --global --get-regexp "user.email" | sed 's/^...........//')
 
-    for file in $DOT_FILES_DIR/.{zshrc,exports,alias,functions,zsh_prompt,gitconfig,clang-format}; do
+    for file in $DOT_FILES_DIR/.{zshrc,exports,alias,functions,zsh_prompt,gitconfig,clang-format,activate_brew}; do
         [ -r "$file" ] && [ -f "$file" ] && cp -v "$file" $HOME
     done;
     unset file;
@@ -68,10 +68,7 @@ read -p "Install Homebrew? (y/N) ";
 echo "";
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    echo '' >> $HOME/.zshrc
-    echo '# Set PATH, MANPATH, etc., for Homebrew.' >> $HOME/.zshrc
-    echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> $HOME/.zshrc
-    eval "$(/opt/homebrew/bin/brew shellenv)"
+    /bin/bash .activate_brew
 fi;
 
 chmod u+x "$DOT_FILES_DIR/installations.sh"
