@@ -52,7 +52,7 @@
     cm = commit
     co = checkout
     br = branch
-    cl = clone -v --progress --recursive
+    cl = clone --verbose --progress --recurse-submodules --shallow-submodules
     chp = cherry-pick -n
 
     conf = config --global --edit # edit global config (this file)
