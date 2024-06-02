@@ -2,7 +2,7 @@
 
 ## Install
 ```bash
-git clone https://github.com/yairfine/dotfiles.git
+git clone --recurse-submodules https://github.com/yairfine/dotfiles.git
 cd dotfiles
 chmod u+x setup.sh
 ./setup.sh
