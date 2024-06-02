@@ -76,4 +76,4 @@
     format = "!f() { git diff -U0 --no-color --relative $* | clang-format-diff.py -p1 -v -i; }; f"
     id = ! git config user.name && git config user.email
     tree = ls-tree -r
-    
+    unpack-objs = ! mv .git/objects/pack/pack-*.pack . && cat pack-*.pack | git unpack-objects -r && rm pack-*.pack
