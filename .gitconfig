@@ -1,0 +1,71 @@
+# [user]
+# 	name = "add with git_setup.sh"
+# 	email = "add with git_setup.sh"
+[core]
+    pager = delta
+    editor = code --wait
+    autocrlf = input
+    excludesfile = ~/.gitignore_global
+[color]
+    ui = auto
+[init]
+    defaultBranch = master
+[commit]
+    template = ~/.stCommitMsg
+[pull]
+    rebase = false
+[diff]
+    tool = vscode
+    colorMoved = default
+[merge]
+    tool = vscode
+    conflictstyle = diff3
+[interactive]
+    diffFilter = delta --color-only
+[delta]
+    navigate = true
+
+[http]
+    sslVerify = false
+[filter "lfs"]
+    clean = git-lfs clean -- %f
+    smudge = git-lfs smudge -- %f
+    process = git-lfs filter-process
+    required = true
+
+[difftool "sourcetree"]
+    cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+    path = 
+[difftool "vscode"]
+    cmd = code --wait --diff $LOCAL $REMOTE
+[mergetool "sourcetree"]
+    cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+    trustExitCode = true
+[mergetool "bc3"]
+    trustExitCode = true
+[mergetool "vscode"]
+    cmd = code --wait $MERGED
+
+[alias]
+    st = status
+    cm = commit
+    cmm = commit -m
+    co = checkout
+    br = branch
+    cl = clone -v --progress --recursive
+
+    amend = commit --amend
+    conf = config --global -e # edit global config (this file)
+    last = log -1 HEAD --stat
+    gl = config --global --list
+    alias = config --get-regexp '^alias'
+    unstage = restore --staged --progress
+    graph = log --graph --oneline --decorate --all 
+    purge = ! git clean -xfd && git submodule foreach --recursive git clean -xfd && git reset --hard && git submodule foreach --recursive git reset --hard && git submodule update --init --recursive
+    cleanlfs = lfs prune
+    diffbase = diff $1...$2 
+    coo = "!f() { git checkout -b $1 --track origin/$1; }; f"
+    softmerge = ! git merge $1 --no-ff --no-commit
+    pushtags = ! git push origin $(git symbolic-ref --short HEAD) --tags
+    # can use `git format` with `--staged` and/or `--function-context` flags
+    format = "!f() { git diff -U0 --no-color --relative $* | clang-format-diff.py -p1 -v -i; }; f"
