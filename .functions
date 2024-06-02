@@ -18,7 +18,7 @@ function fs() {
 }
 
 # Git Clone to ~/repos directory
-clone() {
+function clone() {
 	pushd $REPOS_PATH
 	git clone -v --progress --recursive $1
 	popd
