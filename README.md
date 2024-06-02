@@ -11,9 +11,9 @@ chmod u+x bootstrap.sh
 ## What's included
 
 * aliases, functions, environmnet variables
-* git environment setup
+* `git` environment setup
 * `clang-format` style scheme
-* common `brew` and `pip` packages install scripts
+* install common `brew` and `pip` packages
 * MacOS settings configurations
 * zsh prompt config
 * additional scripts and helpers
