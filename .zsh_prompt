@@ -1,0 +1,30 @@
+## Design the ZSH command prompt line
+
+# parse_git_branch() {
+#     git branch 2> /dev/null | sed -n -e 's/^\* \(.*\)/[\1]/p'
+# }
+
+## Another style option
+# COLOR_DEF=$'\e[0m'
+# COLOR_USR=$'\e[38;5;243m'
+# COLOR_DIR=$'\e[38;5;197m'
+# COLOR_TIME=$'\e[38;5;199m'
+# COLOR_GIT=$'\e[38;5;39m'
+# NEWLINE=$'\n'
+# setopt PROMPT_SUBST
+# export PROMPT='${COLOR_TIME}[%D{%L:%M:%S}] ${COLOR_USR}[%M] ${COLOR_DIR}[%~] ${COLOR_GIT}$(parse_git_branch)${COLOR_DEF}${NEWLINE}%% '
+
+## Another style option
+# COLOR_DEF=$'\e[0m'
+# COLOR_USR=$'\e[38;5;243m'
+# COLOR_DIR=$'\e[38;5;197m'
+# COLOR_TIME=$'\e[38;5;199m'
+# COLOR_GIT=$'\e[38;5;39m'
+# NEWLINE=$'\n'
+# setopt PROMPT_SUBST
+# export PS1='${COLOR_USR}%n@${COLOR_USR}%m ${COLOR_DIR}%1~ ${COLOR_DEF}%# '
+
+# https://robotmoon.com/256-colors/
+# 197 - the color dir (pink)
+# 243 - the color user (grey)
+export PS1='%F{243}%n@%m%f %F{197}%1~%f %# '
