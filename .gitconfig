@@ -67,7 +67,7 @@
     br = branch
     brs = branch --sort=-committerdate
     cl = clone --verbose --progress --recurse-submodules --shallow-submodules
-    chp = cherry-pick -n
+    chp = cherry-pick
     grep = grep --line-number
 
     conf = config --global --edit # edit global config (this file)
