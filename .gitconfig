@@ -20,8 +20,6 @@
     conflictstyle = diff3
 [sequence]
     editor = interactive-rebase-tool
-[interactive]
-    diffFilter = command -v delta >/dev/null 2>&1 && delta --color-only || less
 [delta]
     navigate = true
 
