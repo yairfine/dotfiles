@@ -10,8 +10,6 @@
     ui = auto
 [init]
     defaultBranch = master
-[commit]
-    template = ~/.stCommitMsg
 [pull]
     rebase = false
 [diff]
