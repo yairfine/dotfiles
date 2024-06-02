@@ -47,6 +47,7 @@
     cmd = code --wait $MERGED
 
 [alias]
+    s = status --short
     st = status
     cm = commit
     co = checkout
@@ -54,7 +55,7 @@
     cl = clone -v --progress --recursive
     chp = cherry-pick -n
 
-    conf = config --global -e # edit global config (this file)
+    conf = config --global --edit # edit global config (this file)
     gl = config --global --list
     alias = config --get-regexp '^alias'
     last = log -1 HEAD --stat
