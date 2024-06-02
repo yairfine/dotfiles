@@ -93,9 +93,9 @@ def main():
                         help='formatting style to apply (file, LLVM, GNU, Google, Chromium, '
                         'Microsoft, Mozilla, WebKit)', default='file')
     parser.add_argument('--fallback-style',
-                        help='The name of the predefined style used as a'
-                        'fallback in case clang-format is invoked with'
-                        '--style=file, but can not find the .clang-format'
+                        help='The name of the predefined style used as a '
+                        'fallback in case clang-format is invoked with '
+                        '--style=file, but can not find the .clang-format '
                         'file to use.')
     parser.add_argument('--binary', default=clang_format_bin_path(),
                         help='location of binary to use for clang-format')
