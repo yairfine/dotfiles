@@ -1,5 +1,6 @@
 git-lfs
 git-delta
+git-interactive-rebase-tool
 tree
 wget
 pkg-config
