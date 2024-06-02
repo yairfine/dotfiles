@@ -30,6 +30,7 @@ copy_dotfiles() {
     else
         need_git_setup=true
     fi;
+    echo "";
 }
 
 if [ "$1" == "--force" -o "$1" == "-f" ]; then
@@ -44,6 +45,12 @@ fi;
 unset copy_dotfiles;
 
 source $HOME/.zshrc
+
+read -p "Install git scripts? (y/N) "
+echo ""
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    sudo ./git-scripts/install.sh
+fi
 
 chmod u+x "$DOT_FILES_DIR/git_setup.sh"
 if [ "$need_git_setup" = true ] ; then
