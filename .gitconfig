@@ -2,7 +2,7 @@
 # 	name = "add with git_setup.sh"
 # 	email = "add with git_setup.sh"
 [core]
-    pager = delta
+    pager = command -v delta >/dev/null 2>&1 && delta || less
     editor = code --wait
     autocrlf = input
     excludesfile = ~/.gitignore_global
@@ -21,7 +21,7 @@
 [sequence]
     editor = interactive-rebase-tool
 [interactive]
-    diffFilter = delta --color-only
+    diffFilter = command -v delta >/dev/null 2>&1 && delta --color-only || less
 [delta]
     navigate = true
 
