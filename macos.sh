@@ -26,6 +26,9 @@ defaults write -app SourceTree AppleWindowTabbingMode -string "always"
 # Allow keyboard hold and repeat key
 defaults write -g ApplePressAndHoldEnabled -bool false
 
+# Trackpad app exposé swipe down three fingers
+defaults write com.apple.dock showAppExposeGestureEnabled -bool true
+
 # Disable transparency in the menu bar and elsewhere on Yosemite
 # defaults write com.apple.universalaccess reduceTransparency -bool true
 
