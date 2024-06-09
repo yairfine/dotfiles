@@ -1,6 +1,6 @@
 # [user]
-# 	name = "add with git_setup.sh"
-# 	email = "add with git_setup.sh"
+# 	name = "add with git-setup-identity.sh"
+# 	email = "add with git-setup-identity.sh"
 [core]
     pager = command -v delta >/dev/null 2>&1 && delta || less
     editor = code --wait
