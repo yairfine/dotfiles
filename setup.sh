@@ -25,10 +25,10 @@ copy_dotfiles() {
         git config --global user.email "$GIT_EMAIL"
     fi;
     if [[ "$has_username" && "$has_email" ]]; then
-        need_git_setup=false
+        need_git_id_setup=false
         echo "Git identity is: '$GIT_USER', '$GIT_EMAIL'"
     else
-        need_git_setup=true
+        need_git_id_setup=true
     fi;
     echo "";
 }
@@ -52,14 +52,14 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     sudo ./git-scripts/install.sh
 fi
 
-chmod u+x "$DOT_FILES_DIR/git_setup.sh"
-if [ "$need_git_setup" = true ] ; then
-    "$DOT_FILES_DIR/git_setup.sh"
+chmod u+x "$DOT_FILES_DIR/git-setup-identity.sh"
+if [ "$need_git_id_setup" = true ] ; then
+    "$DOT_FILES_DIR/git-setup-identity.sh"
 else
     read -p "Setup new Git identity? (y/N) ";
     echo "";
     if [[ $REPLY =~ ^[Yy]$ ]]; then
-        "$DOT_FILES_DIR/git_setup.sh"
+        "$DOT_FILES_DIR/git-setup-identity.sh"
     fi;
 fi;
 
