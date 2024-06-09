@@ -1,22 +1,28 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 DOT_FILES_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 copy_dotfiles() {
     echo "COPYING ENVIRONMENT FILES TO HOME DIR";
-    if git config --get-regexp "user.name" &> /dev/null; then
+
+    for file in $DOT_FILES_DIR/.{bashrc,zshrc,exports,alias,functions,zsh_prompt,bash_prompt,clang-format,activate_brew,bash_specific}; do
+        [ -r "$file" ] && [ -f "$file" ] && cp -v "$file" $HOME
+    done;
+    unset file;
+}
+
+setup_git() {
+    if git config --global --get-regexp "user.name" &> /dev/null; then
         has_username=true
     fi;
-    if git config --get-regexp "user.email" &> /dev/null; then
+    if git config --global --get-regexp "user.email" &> /dev/null; then
         has_email=true
     fi;
     GIT_USER=$(git config --global --get-regexp "user.name" | sed 's/^..........//')
     GIT_EMAIL=$(git config --global --get-regexp "user.email" | sed 's/^...........//')
 
-    for file in $DOT_FILES_DIR/.{bashrc,zshrc,exports,alias,functions,zsh_prompt,bash_prompt,gitconfig,clang-format,activate_brew,bash_specific}; do
-        [ -r "$file" ] && [ -f "$file" ] && cp -v "$file" $HOME
-    done;
-    unset file;
+    chmod u+x "$DOT_FILES_DIR/git-configure.sh"
+    "$DOT_FILES_DIR/git-configure.sh"
 
     if [[ "$has_username" ]]; then
         git config --global user.name "$GIT_USER"
@@ -35,14 +41,17 @@ copy_dotfiles() {
 
 if [ "$1" == "--force" -o "$1" == "-f" ]; then
 	copy_dotfiles;
+    setup_git;
 else
 	read -p "This may overwrite existing dotfiles in your home directory. Are you sure? (y/N) ";
 	echo "";
 	if [[ $REPLY =~ ^[Yy]$ ]]; then
 		copy_dotfiles;
+        setup_git;
 	fi;
 fi;
 unset copy_dotfiles;
+unset setup_git;
 
 source $HOME/.zshrc
 
