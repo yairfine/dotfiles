@@ -67,4 +67,4 @@ git config --global alias.unpack-objs "! mv .git/objects/pack/pack-*.pack . && c
 git config --global alias.find-merge "! sh -c 'commit=\$0 && branch=\${1:-HEAD} && (git rev-list \$commit..\$branch --ancestry-path | cat -n; git rev-list \$commit..\$branch --first-parent | cat -n) | sort -k2 -s | uniq -f1 -d | sort -n | tail -1 | cut -f2' "
 git config --global alias.show-merge "! sh -c 'merge=\$(git find-merge \$0 \$1) && [ -n \"\$merge\" ] && git show \$merge' "
 git config --global alias.current "! git symbolic-ref --short -q HEAD || git rev-parse HEAD"
-git config --global alias.keep "! git tag \$(git current)-\$(date +"%Y-%m-%d--%H-%M")"
+git config --global alias.keep "! git tag \$(git current)--\$(LC_TIME=en_US.UTF-8 date +'%Y-%b-%d--%H-%M')"
