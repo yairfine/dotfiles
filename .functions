@@ -36,3 +36,22 @@ function tre() {
 function where() {
 	which "$@" | xargs ls -l
 }
+
+# cheatsheet update. See github.com/yairfine/cheatsheet
+function csu {
+	# update cheatsheet script
+	pushd $REPOS_PATH/cheatsheet
+	git pull
+	chmod u+x ./install.sh
+	sudo ./install.sh
+	popd
+
+	# update the cheatsheet
+	setopt null_glob  # https://zsh.sourceforge.io/Doc/Release/Options.html#index-NULLGLOB
+	for dir in $REPOS_PATH/*-cheatsheet; do
+		pushd $dir
+		git pull --rebase
+		cs -i .
+		popd
+	done
+}
