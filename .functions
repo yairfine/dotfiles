@@ -50,7 +50,7 @@ function csu {
 	setopt null_glob  # https://zsh.sourceforge.io/Doc/Release/Options.html#index-NULLGLOB
 	for dir in $REPOS_PATH/*-cheatsheet; do
 		pushd $dir
-		git pull --rebase
+		git pull
 		cs -i .
 		popd
 	done
