@@ -55,13 +55,3 @@ function csu {
 		popd
 	done
 }
-
-function branch_name_format() {
-	local input="$1"
-	local output=$(echo "$input" | sed -E 's|^[^:]+://||') # Remove the prefix *://
-	output=$(echo "$output" | sed 's/[^a-zA-Z0-9]/ /g')    # Replace non-alphanumeric characters with spaces
-	output=$(echo "$output" | awk '{$1=$1;print}')         # Strip leading and trailing whitespace
-	output=$(echo "$output" | awk '{print tolower($0)}')   # Convert to lowercase
-	output=$(echo "$output" | sed 's/ [ ]*/-/g')           # Replace spaces with hyphens
-	echo "$output"
-}
