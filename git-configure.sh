@@ -70,3 +70,4 @@ git config --global alias.find-merge "! sh -c 'commit=\$0 && branch=\${1:-HEAD} 
 git config --global alias.show-merge "! sh -c 'merge=\$(git find-merge \$0 \$1) && [ -n \"\$merge\" ] && git show \$merge' "
 git config --global alias.current "! git symbolic-ref --short -q HEAD || git rev-parse HEAD"
 git config --global alias.keep "! git tag \$(git current)--\$(LC_TIME=en_US.UTF-8 date +'%Y-%b-%d--%H-%M')"
+git config --global alias.branch-format "! f() { local input=\"\$1\" ; local output=\$(echo \"\$input\" | sed -E s\|^[^:]+://\|\|) ; output=\$(echo \"\$output\" | sed 's/[^a-zA-Z0-9]/ /g') ; output=\$(echo \"\$output\" | awk '{\$1=\$1;print}') ; output=\$(echo \"\$output\" | awk '{print tolower(\$0)}') ; output=\$(echo \"\$output\" | sed 's/ [ ]*/-/g') ; local br_name=\"eng/PR-\$output\" ; git branch \"\$br_name\" ; echo \"\$br_name\" ;}; f"
