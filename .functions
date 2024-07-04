@@ -41,9 +41,7 @@ function where() {
 function csu {
 	# update cheatsheet script
 	pushd $REPOS_PATH/cheatsheet
-	git pull
-	chmod u+x ./install.sh
-	sudo ./install.sh
+	git pull | grep -i "Already up to date" || sudo ./install.sh
 	popd
 
 	# update the cheatsheet
