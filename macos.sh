@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 # credit: https://github.com/mathiasbynens/dotfiles/blob/main/.macos
 # ~/.macos — https://mths.be/macos

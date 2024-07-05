@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env sh
 
 CWD=$(pwd)
 echo "Cleanup python cache under '$CWD'"
