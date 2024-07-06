@@ -15,13 +15,14 @@ alias edit="open -a 'TextMate'"
 # open zsh config file for edits
 alias zshc="code ~/.zshrc"
 
-# Find a filename in some sub-dir in the current working directory (excluding in git repos)
-alias ff='find . | grepi -v ./.git/ | grepi'
-
 # grep with color / highlighting the findings
 alias grep='grep --colour'
 alias grepi='grep --colour -i'
 
+# Find a filename in some sub-dir in the current working directory (excluding .git/ dir)
+alias ff='find . | grepi -v ./.git/ | grepi'
+# Find text inside files under the current working directory recursively (excluding .git/ dir)
+alias fff='find . -type f -not -path "*.git/*" -print0 | xargs -0 grep --binary-files=without-match --colour -i'
 
 # save to clipboard
 alias clip='pbcopy'
