@@ -43,8 +43,8 @@ function csu {
 	pushd $REPOS_PATH/cheatsheet
 	TEMPFILE=$(mktemp)
 	git pull 2>&1 | tee $TEMPFILE
-    grep -i -e "Already up to date." -e "fatal: Could not read from remote repository" $TEMPFILE &>/dev/null || sudo ./install.sh
-    rm $TEMPFILE
+	grep -i -e "Already up to date." -e "fatal: Could not read from remote repository" $TEMPFILE &>/dev/null || sudo ./install.sh
+	rm $TEMPFILE
 	popd
 
 	# update the cheatsheet
