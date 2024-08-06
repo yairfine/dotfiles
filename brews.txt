@@ -2,6 +2,7 @@ git-lfs
 git-delta
 git-interactive-rebase-tool
 tree
+maccy
 wget
 pkg-config
 cmake
