@@ -20,9 +20,6 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 # Disable the sound effects on boot
 sudo nvram SystemAudioVolume=" "
 
-# Open repos in Sourcetree app as tabs within a single window:
-defaults write -app SourceTree AppleWindowTabbingMode -string "always"
-
 # Allow keyboard hold and repeat key
 defaults write -g ApplePressAndHoldEnabled -bool false
 
@@ -87,9 +84,6 @@ defaults write com.apple.dock showAppExposeGestureEnabled -bool true
 
 # Disable the crash reporter
 ## defaults write com.apple.CrashReporter DialogType -string "none"
-
-# Set Help Viewer windows to non-floating mode
-# defaults write com.apple.helpviewer DevMode -bool true
 
 # Fix for the ancient UTF-8 bug in QuickLook (https://mths.be/bbo)
 # Commented out, as this is known to cause problems in various Adobe apps :(
@@ -159,7 +153,7 @@ defaults write com.apple.dock showAppExposeGestureEnabled -bool true
 # defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
 
 # Set a blazingly fast keyboard repeat rate
-# defaults write NSGlobalDomain KeyRepeat -int 1
+defaults write NSGlobalDomain KeyRepeat -int 1
 # defaults write NSGlobalDomain InitialKeyRepeat -int 10
 
 # Set language and text formats
@@ -266,16 +260,16 @@ defaults write com.apple.dock showAppExposeGestureEnabled -bool true
 # defaults write com.apple.finder ShowRemovableMediaOnDesktop -bool true
 
 # Finder: show hidden files by default
-## defaults write com.apple.finder AppleShowAllFiles -bool true
+defaults write com.apple.finder AppleShowAllFiles -bool true
 
 # Finder: show all filename extensions
-# defaults write NSGlobalDomain AppleShowAllExtensions -bool true
+defaults write NSGlobalDomain AppleShowAllExtensions -bool true
 
 # Finder: show status bar
 # defaults write com.apple.finder ShowStatusBar -bool true
 
 # Finder: show path bar
-# defaults write com.apple.finder ShowPathbar -bool true
+defaults write com.apple.finder ShowPathbar -bool true
 
 # Display full POSIX path as Finder window title
 # defaults write com.apple.finder _FXShowPosixPathInTitle -bool true
@@ -287,7 +281,7 @@ defaults write com.apple.dock showAppExposeGestureEnabled -bool true
 # defaults write com.apple.finder FXDefaultSearchScope -string "SCcf"
 
 # Disable the warning when changing a file extension
-# defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
+defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
 
 # Enable spring loading for directories
 # defaults write NSGlobalDomain com.apple.springing.enabled -bool true
@@ -832,6 +826,13 @@ defaults write com.apple.dock showAppExposeGestureEnabled -bool true
 # Expand the print dialog by default
 # defaults write com.operasoftware.Opera PMPrintingExpandedStateForPrint2 -boolean true
 # defaults write com.operasoftware.OperaDeveloper PMPrintingExpandedStateForPrint2 -boolean true
+
+###############################################################################
+# SourceTree.app                                                                  #
+###############################################################################
+
+# Open repos in Sourcetree app as tabs within a single window
+defaults write -app SourceTree AppleWindowTabbingMode -string "always"
 
 ###############################################################################
 # SizeUp.app                                                                  #
