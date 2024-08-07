@@ -71,7 +71,7 @@ git config --global alias.purge "! git clean -xfd && git submodule foreach --rec
 git config --global alias.subpurge "! git submodule foreach --recursive git clean -xfd && git submodule foreach --recursive git reset --hard && git submodule update --init --recursive"
 git config --global alias.cleanlfs "lfs prune"
 git config --global alias.diffbase "diff \$1...\$2"
-git config --global alias.cop "! checkout_and_pull() { git checkout \$* && git pull; }; checkout_and_pull"
+git config --global alias.cop "! checkout_and_pull() { git co \$* && git pl; }; checkout_and_pull"
 git config --global alias.cor "! checkout_and_reset() { [ ! \$# -eq 0 ] && git checkout \$* && git ft && git reset --hard \"@{upstream}\"; }; checkout_and_reset"
 git config --global alias.cotag "!checkout_tag() { if [[ \$(git tag --list | grep -i \$1 | wc -l) -eq 1 ]]; then git tag --list | grep -i \$1 | xargs -I {} sh -c 'echo {}; git checkout {}' ; else echo 'Invalid tag[s]:'; git tag --list | grep -i \$1; fi }; checkout_tag"
 git config --global alias.softmerge "! git merge \$1 --no-ff --no-commit"
