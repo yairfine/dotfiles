@@ -24,6 +24,9 @@ alias ff='find . | grepi -v ./.git/ | grepi'
 # Find text inside files under the current working directory recursively (excluding .git/ dir)
 alias fff='find . -type f -not -path "*.git/*" -print0 | xargs -0 grep --binary-files=without-match --colour -i'
 
+# search in shell history
+alias hist="history -32768 | grep -v 'hist ' | tr -s ' ' | sort -uk2 | sort -n | cut -d ' ' -f3- | grepi"
+
 # save to clipboard
 alias clip='pbcopy'
 
