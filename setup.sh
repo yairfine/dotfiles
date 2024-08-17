@@ -8,6 +8,8 @@ copy_dotfiles() {
     for file in $DOT_FILES_DIR/.{bashrc,zshrc,exports,alias,functions,zsh_prompt,bash_prompt,clang-format,activate_brew,bash_specific}; do
         [ -r "$file" ] && [ -f "$file" ] && cp -v "$file" $HOME
     done;
+
+    echo "export DOT_FILES_DIR=${DOT_FILES_DIR}" >> $HOME/.exports
     unset file;
 }
 
