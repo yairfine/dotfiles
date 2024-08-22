@@ -91,6 +91,7 @@ alias fan="smcif -r F0Ac F1Ac"
 
 alias dockfix="defaults write com.apple.dock ResetLaunchPad -bool true; killall Dock"
 
+alias rctl="remotectl"
 alias rcl="remotectl list"
 
 alias reload="source ~/.zshrc ;"
