@@ -73,6 +73,7 @@ alias logos="/usr/bin/log"
 alias logos2="\$XCODE_PATH/Platforms/MacOSX.platform/Developer/SDKs/iOSHostAdditions*sdk/usr/local/bin/logdump"
 
 alias getmod="stat -f \"%A %N\"" # print mode (file permissions) of file
+alias bytes="stat -f \"%z %N\""   # print file size in Bytes. example: 'bytes *.bin'
 
 alias tarlb="tar --use-compress-program=lbzip2"
 alias tarlbu="tar --use-compress-program=lbunzip2"
