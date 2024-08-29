@@ -70,3 +70,18 @@ function update {
 	rm $TEMPFILE
 	popd
 }
+
+# ssh-add all keys
+function ssha {
+    eval $(ssh-agent)
+
+    pushd "$HOME/.ssh"
+
+    for file in *.pub; do
+        [ -f "$file" ] || break
+        key="$(basename $file .pub)"
+        ssh-add $key
+    done
+
+    popd
+}
