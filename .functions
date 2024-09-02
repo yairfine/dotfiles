@@ -1,31 +1,31 @@
 # Create a new directory and enter it
 function mkd() {
-	mkdir -p "$@" && cd "$_";
+    mkdir -p "$@" && cd "$_"
 }
 
 # Determine size of a file or total size of a directory
 function fs() {
-	if du -b /dev/null > /dev/null 2>&1; then
-		local arg=-sbh;
-	else
-		local arg=-sh;
-	fi
-	if [[ -n "$@" ]]; then
-		du $arg -- "$@";
-	else
-		du $arg .[^.]* ./*;
-	fi;
+    if du -b /dev/null >/dev/null 2>&1; then
+        local arg=-sbh
+    else
+        local arg=-sh
+    fi
+    if [[ -n "$@" ]]; then
+        du $arg -- "$@"
+    else
+        du $arg .[^.]* ./*
+    fi
 }
 
 # Git Clone to ~/repos directory
 function clone() {
-	if [[ -z "${VAR}" ]]; then
-		pushd $REPOS_PATH
-		git clone -v --progress --recurse-submodules --shallow-submodules $1
-		popd
-	else
-		echo "could not file repos path"
-	fi;
+    if [[ -z "${VAR}" ]]; then
+        pushd $REPOS_PATH
+        git clone -v --progress --recurse-submodules --shallow-submodules $1
+        popd
+    else
+        echo "could not file repos path"
+    fi
 }
 
 # `tre` is a shorthand for `tree` with hidden files and color enabled, ignoring
@@ -33,42 +33,42 @@ function clone() {
 # `less` with options to preserve color and line numbers, unless the output is
 # small enough for one screen.
 function tre() {
-	tree -aC -I '.git|node_modules|bower_components' --dirsfirst "$@" | less -FRNX;
+    tree -aC -I '.git|node_modules|bower_components' --dirsfirst "$@" | less -FRNX
 }
 
 # follow symbolic links if needed
 function where() {
-	which "$@" | xargs ls -l
+    which "$@" | xargs ls -l
 }
 
 # cheatsheet update. See github.com/yairfine/cheatsheet
 function csu {
-	# update cheatsheet script
-	pushd $REPOS_PATH/cheatsheet
-	TEMPFILE=$(mktemp)
-	git pull 2>&1 | tee $TEMPFILE
-	grep -i -e "Already up to date." -e "fatal: Could not read from remote repository" $TEMPFILE &>/dev/null || sudo ./install.sh
-	rm $TEMPFILE
-	popd
+    # update cheatsheet script
+    pushd $REPOS_PATH/cheatsheet
+    TEMPFILE=$(mktemp)
+    git pull 2>&1 | tee $TEMPFILE
+    grep -i -e "Already up to date." -e "fatal: Could not read from remote repository" $TEMPFILE &>/dev/null || sudo ./install.sh
+    rm $TEMPFILE
+    popd
 
-	# update the cheatsheet
-	setopt null_glob  # https://zsh.sourceforge.io/Doc/Release/Options.html#index-NULLGLOB
-	for dir in $REPOS_PATH/*-cheatsheet; do
-		pushd $dir
-		git pull
-		cs -i .
-		popd
-	done
+    # update the cheatsheet
+    setopt null_glob # https://zsh.sourceforge.io/Doc/Release/Options.html#index-NULLGLOB
+    for dir in $REPOS_PATH/*-cheatsheet; do
+        pushd $dir
+        git pull
+        cs -i .
+        popd
+    done
 }
 
 function update {
-	# update cheatsheet script
-	pushd $DOT_FILES_DIR
-	TEMPFILE=$(mktemp)
-	git pull --ff-only --recurse-submodules 2>&1 | tee $TEMPFILE
-	grep -i -e "Already up to date." -e "fatal" -e "aborting" $TEMPFILE &>/dev/null || ./setup.sh
-	rm $TEMPFILE
-	popd
+    # update cheatsheet script
+    pushd $DOT_FILES_DIR
+    TEMPFILE=$(mktemp)
+    git pull --ff-only --recurse-submodules 2>&1 | tee $TEMPFILE
+    grep -i -e "Already up to date." -e "fatal" -e "aborting" $TEMPFILE &>/dev/null || ./setup.sh
+    rm $TEMPFILE
+    popd
 }
 
 # ssh-add all keys
