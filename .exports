@@ -9,6 +9,8 @@ export XCODE_PATH=$(xcode-select -p)
 # adding paths to PATH
 export PATH=$PATH:$REPOS_PATH/dotfiles
 export PATH=$PATH:$HOME/dotfiles
+export PATH=$PATH:$HOME/scripts
+export PATH=$PATH:$HOME/scripts/bin
 export PATH=$PATH:~/.local/bin
 export PATH=$PATH:/Library/Frameworks/Python.framework/Versions/3.8/bin
 export PATH=$PATH:$HOME/Library/Python/3.8/bin
