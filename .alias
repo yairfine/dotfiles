@@ -65,6 +65,9 @@ alias df="df -kH"
 
 alias top="top -o cpu"
 
+# rsync flags: --verbose --progress --partial -a (archive: save links, permission, etc)
+alias rsync="rsync -avP"
+
 alias killremote="killall ARDAgent ; killall \"Remote Desktop\" ; killall \"Screen Sharing\" ; sudo killall screensharingd"
 
 alias psef="ps -ef | grep -i "
