@@ -73,7 +73,7 @@ function update {
 
 # ssh-add all keys
 function ssha {
-    eval $(ssh-agent)
+    eval "$(ssh-agent -s)"
 
     pushd "$HOME/.ssh"
 
