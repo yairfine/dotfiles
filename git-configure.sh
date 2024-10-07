@@ -91,8 +91,6 @@ git config --global alias.format "!format_diff() { git diff -U0 --no-color --rel
 git config --global alias.id "! git config user.name && git config user.email"
 git config --global alias.tree "ls-tree -r"
 git config --global alias.unpack-objs "! mv .git/objects/pack/pack-*.pack . && cat pack-*.pack | git unpack-objects -r && rm pack-*.pack"
-git config --global alias.find-merge "! sh -c 'commit=\$0 && branch=\${1:-HEAD} && (git rev-list \$commit..\$branch --ancestry-path | cat -n; git rev-list \$commit..\$branch --first-parent | cat -n) | sort -k2 -s | uniq -f1 -d | sort -n | tail -1 | cut -f2' "
-git config --global alias.show-merge "! sh -c 'merge=\$(git find-merge \$0 \$1) && [ -n \"\$merge\" ] && git show \$merge' "
 git config --global alias.current "! git symbolic-ref --short -q HEAD || git rev-parse HEAD"
 git config --global alias.keep "! git tag \$(git current)--\$(LC_TIME=en_US.UTF-8 date +'%Y-%b-%d--%H-%M')"
 git config --global alias.bformat "! f() { [ ! \$# -eq 0 ] && BR=\$(git branch-format \"\$1\" \"\$2\") && git checkout \$BR ; }; f"
