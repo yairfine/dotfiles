@@ -99,3 +99,4 @@ git config --global alias.bformat "! f() { [ ! \$# -eq 0 ] && BR=\$(git branch-f
 git config --global alias.bradar "! f() { [ ! -z \"\$1\" ] && BR=\$(git branch-format \"\$1\" \"eng/PR-\") && git checkout \$BR ; }; f"
 git config --global alias.merged "! f() { [ ! -z \"\$1\" ] && git for-each-ref --merged=\"\$1\" --format='%(refname:short)' refs/heads | grep -v -w -e \"\$1\" ; }; f"
 git config --global alias.delete-merged "! f() { [ ! -z \"\$1\" ] && git for-each-ref --merged=\"\$1\" --format='git branch --delete %(refname:short)' refs/heads | grep -v -w -e \"\$1\" ; }; f"
+git config --global alias.showm "show --first-parent"
