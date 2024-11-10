@@ -66,7 +66,7 @@ function update {
     pushd $DOT_FILES_DIR
     TEMPFILE=$(mktemp)
     git pull --ff-only --recurse-submodules 2>&1 | tee $TEMPFILE
-    grep -i -e "Already up to date." -e "fatal" -e "aborting" $TEMPFILE &>/dev/null || ./setup.sh
+    grep -i -e "Already up to date." -e "fatal" -e "aborting" -e "You are not currently on a branch" $TEMPFILE &>/dev/null || ./setup.sh
     rm $TEMPFILE
     popd
 }
