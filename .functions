@@ -92,6 +92,11 @@ function ssha {
 }
 
 function destroy() {
+    if [ $# -eq 0 ]; then
+        echo "Missing input file"
+        return 1
+    fi
+
     if [[ -f $1 ]]; then
         SIZE_BYTES=$(stat -f "%z" $1)
         chmod u+w $1
@@ -99,5 +104,6 @@ function destroy() {
         rm -v -i $1
     else
         echo "file '$1' not exists"
+        return 1
     fi
 }
