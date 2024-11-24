@@ -37,7 +37,7 @@ alias clip='pbcopy'
 alias ll='ls -lhF'
 
 # copy current working directory path to clipboard
-alias cwd="pwd | tr -d '\n' | pbcopy; echo copied to clipboard: $(pwd)"
+alias cwd="pwd | tr -d '\n' | pbcopy; echo copied to clipboard: \$(pwd)"
 
 # clean python cache files
 alias clean-pyc="find . -name '*.pyc' -exec rm -f {} +;	find . -name '*.pyo' -exec rm -f {} +;	find . -name '*~' -exec rm -f {} +;	find . -name '__pycache__' -exec rm -fr {} +; find . -name '.pytest_cache' -exec rm -rf {} +; find . -name '.mypy_cache' -exec rm -rf {} +"
