@@ -3,6 +3,11 @@ function mkcd() {
     mkdir -p "$@" && cd "$_"
 }
 
+# Copy absolute path of file to clipboard
+function abspath() {
+    realpath "$@" | tr -d '\n' | pbcopy
+}
+
 # Determine size of a file or total size of a directory
 function fs() {
     if du -b /dev/null >/dev/null 2>&1; then
