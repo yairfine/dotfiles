@@ -107,3 +107,13 @@ function destroy() {
         return 1
     fi
 }
+
+function link_repos_here() {
+    for repo in "$@"; do
+        if [ -d "$REPOS_PATH/$repo" ]; then
+            ln -s -v "$REPOS_PATH/$repo" .
+        else
+            echo "$repo not found"
+        fi
+    done
+}
