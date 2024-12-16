@@ -50,6 +50,9 @@ alias dl="cd ~/Downloads"
 alias scr="cd ~/scripts"
 alias repos="cd $REPOS_PATH"
 
+## SSH
+alias sshag='eval "$(ssh-agent -s)"'
+
 # mkdir and copy recursive (parents=True)
 alias mkdirr="mkdir -p"
 alias cpr="cp -pR"
