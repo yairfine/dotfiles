@@ -5,7 +5,9 @@ function mkcd() {
 
 # Copy absolute path of file to clipboard
 function abspath() {
-    realpath "$@" | tr -d '\n' | pbcopy
+    absp=$(realpath "$@" | tr -d '\n')
+    echo $absp
+    echo $absp | pbcopy
 }
 
 # Determine size of a file or total size of a directory
