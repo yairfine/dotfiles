@@ -13,47 +13,18 @@ copy_dotfiles() {
     unset file;
 }
 
-setup_git() {
-    if git config --global --get-regexp "user.name" &> /dev/null; then
-        has_username=true
-    fi;
-    if git config --global --get-regexp "user.email" &> /dev/null; then
-        has_email=true
-    fi;
-    GIT_USER=$(git config --global --get-regexp "user.name" | sed 's/^..........//')
-    GIT_EMAIL=$(git config --global --get-regexp "user.email" | sed 's/^...........//')
-
-    chmod u+x "$DOT_FILES_DIR/git-configure.sh"
-    "$DOT_FILES_DIR/git-configure.sh"
-
-    if [[ "$has_username" ]]; then
-        git config --global user.name "$GIT_USER"
-    fi;
-    if [[ "$has_email" ]]; then
-        git config --global user.email "$GIT_EMAIL"
-    fi;
-    if [[ "$has_username" && "$has_email" ]]; then
-        need_git_id_setup=false
-        echo "Git identity is: '$GIT_USER', '$GIT_EMAIL'"
-    else
-        need_git_id_setup=true
-    fi;
-    echo "";
-}
-
 if [ "$1" == "--force" -o "$1" == "-f" ]; then
 	copy_dotfiles;
-    setup_git;
+    $DOT_FILES_DIR/git-configure;
 else
 	read -p "This may overwrite existing dotfiles in your home directory. Are you sure? (y/N) ";
 	echo "";
 	if [[ $REPLY =~ ^[Yy]$ ]]; then
 		copy_dotfiles;
-        setup_git;
+        $DOT_FILES_DIR/git-configure;
 	fi;
 fi;
 unset copy_dotfiles;
-unset setup_git;
 
 source $HOME/.zshrc
 
