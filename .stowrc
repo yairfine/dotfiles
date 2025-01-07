@@ -1,0 +1,4 @@
+--verbose
+--target=~/
+--ignore=.stowrc
+--ignore=DS_Store
