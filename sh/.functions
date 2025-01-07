@@ -69,8 +69,8 @@ function csu {
 }
 
 function update {
-    # update cheatsheet script
-    pushd $DOT_FILES_DIR
+    # update dotfiles
+    pushd "$REPOS_PATH/dotfiles/"
     TEMPFILE=$(mktemp)
     git pull --ff-only --recurse-submodules 2>&1 | tee $TEMPFILE
     grep -i -e "Already up to date." -e "fatal" -e "aborting" -e "You are not currently on a branch" $TEMPFILE &>/dev/null || ./setup.sh
