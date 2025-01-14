@@ -71,7 +71,7 @@ function csu {
 function update {
     # update dotfiles
     pushd "$REPOS_PATH/dotfiles/"
-    git pull --rebase
+    git pull --rebase --recurse-submodules
     popd
 }
 
