@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-DOT_FILES_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+DOTFILES_DIT=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 stow_dotfiles() {
     if ! command -v stow 2 >&1 >/dev/null; then
@@ -14,13 +14,13 @@ stow_dotfiles() {
 
 if [ "$1" == "--force" -o "$1" == "-f" ]; then
     stow_dotfiles
-    $DOT_FILES_DIR/git-configure.sh
+    $DOTFILES_DIT/git-configure.sh
 else
     read -p "This may overwrite existing dotfiles in your home directory. Are you sure? (y/N) "
     echo ""
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         stow_dotfiles
-        $DOT_FILES_DIR/git-configure.sh
+        $DOTFILES_DIT/git-configure.sh
     fi
 fi
 unset stow_dotfiles
