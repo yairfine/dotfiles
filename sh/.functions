@@ -134,7 +134,7 @@ function destroy() {
             SIZE_BYTES=$(stat -f "%z" $filename)
             chmod u+w $filename
             for run in {1..2}; do
-                dd if=/dev/urandom of=$filename bs=1 seek=0 count=$SIZE_BYTES conv=notrunc
+                ddrb $SIZE_BYTES $filename
             done
             rm -v -i $filename
         else
