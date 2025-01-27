@@ -88,6 +88,41 @@ function ssha {
     popd
 }
 
+# dd random bytes with semi optimal block size
+function ddrb() {
+    if [[ $# -ne 2 ]]; then
+        echo "usage: ddrb <size in bytes> <output file>"
+        return 1
+    else
+        SIZE=$1
+        OUTPUT=$2
+    fi
+
+    if [ ! -f $OUTPUT ]; then
+        touch $OUTPUT
+    fi
+
+    if command -v getconf &>/dev/null; then
+        BS=$(getconf PAGE_SIZE)
+    else
+        BS="4k"
+    fi
+
+    COUNT=$(expr $SIZE / $BS)
+    TOTAL_FIRST=$(echo "$COUNT * $BS" | bc)
+    REMINDER=$(echo "$SIZE - $TOTAL_FIRST" | bc)
+
+    echo "writing $BS * $COUNT and then another $REMINDER"
+
+    if [[ $COUNT -eq 0 ]]; then
+        dd if=/dev/urandom of=$OUTPUT seek=0 bs=1 count=$SIZE
+        return 0
+    fi
+
+    dd if=/dev/urandom of=$OUTPUT seek=0 bs=$BS count=$COUNT
+    dd if=/dev/urandom of=$OUTPUT seek=$TOTAL_FIRST bs=1 count=$REMINDER
+}
+
 function destroy() {
     if [ $# -eq 0 ]; then
         echo "Missing input file"
