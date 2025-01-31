@@ -109,9 +109,9 @@ function ddbf() {
         BS="4k"
     fi
 
-    COUNT=$(expr $SIZE / $BS)
-    TOTAL_FIRST=$(echo "$COUNT * $BS" | bc)
-    REMINDER=$(echo "$SIZE - $TOTAL_FIRST" | bc)
+    COUNT=$((SIZE / BS))
+    TOTAL_FIRST=$((COUNT * BS))
+    REMINDER=$((SIZE - TOTAL_FIRST))
 
     echo "writing $BS * $COUNT and then another $REMINDER"
 
