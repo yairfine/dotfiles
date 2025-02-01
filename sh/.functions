@@ -68,6 +68,13 @@ function csu {
     done
 }
 
+function rgs() {
+    PATHS=$(printf '%s\n' "${RG_SEARCH_PATH//:/ }")
+    EXPANDED_PATHS=$(eval "echo $PATHS")
+
+    RIPGREP_CONFIG_PATH=$HOME/.ripgreprc rg $@ $(printf '%s\n' $EXPANDED_PATHS)
+}
+
 function update {
     # update dotfiles
     pushd "$REPOS_PATH/dotfiles/"
