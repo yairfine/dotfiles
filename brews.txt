@@ -8,3 +8,4 @@ pkg-config
 cmake
 meson
 ninja
+ripgrep

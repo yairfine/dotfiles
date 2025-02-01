@@ -9,7 +9,7 @@ stow_dotfiles() {
     fi
 
     echo "INSTALLING ENVIRONMENT FILES TO HOME DIR"
-    stow -S sh -S bash -S zsh -S clang-format -S macos
+    stow -S sh -S bash -S zsh -S clang-format -S macos -S ripgrep
 }
 
 if [ "$1" == "--force" -o "$1" == "-f" ]; then
