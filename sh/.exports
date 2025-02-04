@@ -19,7 +19,7 @@ export PATH=$PATH:$HOME/Library/Python/3.9/bin
 export PATH=$PATH:/opt/brew/opt/ccache/libexec
 export PATH=$PATH:$XCODE_PATH/Toolchains/XcodeDefault.xctoolchain/usr/local/bin # clang-format path
 
-export RG_SEARCH_PATH="$REPOS_PATH/*-cheatsheet:$REPOS_PATH/*scripts"
+export RG_SEARCH_PATH="$REPOS_PATH/*-cheatsheet"
 
 # Set the exact colors (fb - forground+background) of every type of file
 # Set LSCOLORS (FreeBSD / macOS).
