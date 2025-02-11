@@ -6,8 +6,9 @@ alias gitpurge="git clean -xfd; git submodule foreach --recursive git clean -xfd
 # Print the git graph of the current repository
 alias gitgraph="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'--abbrev-commit --date=relative"
 
-# fetch all git repos in $REPOS_PATH
+# fetch/pull all git repos in $REPOS_PATH
 alias fetch-all="find \$REPOS_PATH -type d -maxdepth 1 -mindepth 1 -print -exec git -C {} fetch --all --prune \;"
+alias pull-all="find \$REPOS_PATH -type d -maxdepth 1 -mindepth 1 -print -exec git -C {} pull-all --fetch \;"
 
 # SHA256 check-sum
 alias sha256="shasum -a 256"
