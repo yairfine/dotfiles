@@ -68,7 +68,7 @@ def clang_format_bin_path() -> str:
         clang_format = clang_format_bin
     else:
         raise FileNotFoundError('No clang-format binary found in system')
-    
+
     return clang_format
 
 def default_arg_clang_format() -> str:
