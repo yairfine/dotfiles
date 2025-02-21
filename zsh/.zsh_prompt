@@ -28,4 +28,3 @@
 # 197 - the color dir (pink)
 # 243 - the color user (grey)
 export PS1='%F{243}%n@%m%f %F{197}%1~%f %# '
-

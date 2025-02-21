@@ -18,4 +18,3 @@ if command -v brew &>/dev/null; then
 else
     echo "Homebrew could not be found, skipping brew packages"
 fi
-
