@@ -27,5 +27,3 @@ cp -R $1 ${TARGET_DIR}
 pushd ${TMP_DIR}
 tar -cvzf ${CURR_PATH}/root.tar.gz ./*
 popd
-
-
