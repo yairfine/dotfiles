@@ -51,7 +51,7 @@ BinPackParameters: true
 #   SplitEmptyNamespace: true
 BreakBeforeBinaryOperators: None
 BreakBeforeConceptDeclarations: true
-BreakBeforeBraces: Allman  # defined separated for each language at the bottom 
+BreakBeforeBraces: Allman  # defined separated for each language at the bottom
 BreakBeforeInheritanceComma: false
 BreakInheritanceList: AfterComma
 BreakBeforeTernaryOperators: false
@@ -129,7 +129,7 @@ PenaltyIndentedWhitespace: 0                # (clang-format 12)   Penalty for ea
 PointerAlignment: Right
 ReflowComments:  true
 SeparateDefinitionBlocks: Always
-SortIncludes:    CaseInsensitive 
+SortIncludes:    CaseInsensitive
 SortJavaStaticImport: Before
 SortUsingDeclarations: true
 SpaceAfterCStyleCast: false
