@@ -13,3 +13,8 @@ repos:
     -   id: mixed-line-ending
     -   id: check-case-conflict
     -   id: detect-private-key
+-   repo: https://github.com/yairfine/todo-md.git
+    rev: v0.2
+    hooks:
+    -   id: generate-todo-md
+        args: ["-e", ";}' "]  # not a TODO that passed filters
