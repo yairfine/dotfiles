@@ -73,8 +73,8 @@ alias df="df -kH"
 alias top="top -o cpu"
 
 # create files, usage: dd*f <bytes> <out file>
-alias ddfr="ddbf /dev/urandom"
-alias ddfz="ddbf /dev/zero"
+alias ddr="ddb /dev/urandom"
+alias ddz="ddb /dev/zero"
 
 # rsync flags: --verbose --progress --partial -a (archive: save links, permission, etc)
 alias rsync="rsync -avP"

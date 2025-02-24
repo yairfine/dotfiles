@@ -95,10 +95,10 @@ function ssha {
     popd
 }
 
-# dd bytes with semi optimal block size. See alias ddfr ddfz ddfo
-function ddbf() {
+# dd bytes with semi optimal block size. See alias ddr ddz ddfo
+function ddb() {
     if [[ $# -ne 3 ]]; then
-        echo "usage: ddb  <input stream> <size in bytes> <output file>"
+        echo "usage: ddb <input stream> <size in bytes> <output file>"
         return 1
     else
         STREAM=$1
@@ -142,7 +142,7 @@ function destroy() {
             SIZE_BYTES=$(stat -f "%z" $filename)
             chmod u+w $filename
             for run in {1..2}; do
-                ddfr $SIZE_BYTES $filename
+                ddr $SIZE_BYTES $filename
             done
             rm -v -i $filename
         else
