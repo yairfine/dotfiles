@@ -79,6 +79,7 @@ function update {
     # update dotfiles
     pushd "$REPOS_PATH/dotfiles/"
     git pull --rebase --recurse-submodules
+    ./setup.sh --yes
     popd
 }
 
