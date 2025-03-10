@@ -23,6 +23,9 @@ alias zshc="code ~/.zshrc"
 alias grep='grep --colour'
 alias grepi='grep --colour -i'
 
+# ripgrep
+alias rgi="rg -i"
+
 # Find a filename in some sub-dir in the current working directory (excluding .git/ dir)
 alias ff='find . | grepi -v ./.git/ | grepi'
 # Find text inside files under the current working directory recursively (excluding .git/ dir)
