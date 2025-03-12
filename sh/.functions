@@ -161,3 +161,9 @@ function link_repos_here() {
         fi
     done
 }
+
+# source outer environments
+function src() {
+    source ${HOME}/scripts/.alias
+    source ${REPOS_PATH}/scripts/.alias
+}
