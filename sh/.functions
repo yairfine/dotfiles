@@ -164,6 +164,10 @@ function link_repos_here() {
 
 # source outer environments
 function src() {
+    if [ -f "$HOME/.profilepriv" ]; then
+        source "$HOME/.profilepriv"
+    fi
+
     source ${HOME}/scripts/.alias
     source ${REPOS_PATH}/scripts/.alias
 }
