@@ -13,7 +13,7 @@ fi
 
 if command -v brew &>/dev/null; then
     brew update
-    xargs brew install <"$DOTFILES_DIT/brews.txt"
+    xargs brew install <"$DOTFILES_DIT/formulae.txt"
     git lfs install
 else
     echo "Homebrew could not be found, skipping brew packages"
