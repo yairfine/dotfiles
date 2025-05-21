@@ -14,13 +14,13 @@ stow_dotfiles() {
 
 if [ "$1" == "--yes" -o "$1" == "-y" ]; then
     stow_dotfiles
-    $DOTFILES_DIT/git-configure.sh
+    $DOTFILES_DIT/bin/git-configure.sh
 else
     read -p "This may overwrite existing dotfiles in your home directory. Are you sure? (y/N) "
     echo ""
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         stow_dotfiles
-        $DOTFILES_DIT/git-configure.sh
+        $DOTFILES_DIT/bin/git-configure.sh
     fi
 fi
 unset stow_dotfiles

@@ -7,9 +7,9 @@ mkdir -p $REPOS_PATH &>/dev/null
 export XCODE_PATH=$(xcode-select -p)
 
 # adding paths to PATH
-export PATH=$PATH:$REPOS_PATH/dotfiles
+export PATH=$PATH:$REPOS_PATH/dotfiles/bin
 export PATH=$PATH:$REPOS_PATH/scripts
-export PATH=$PATH:$HOME/dotfiles
+export PATH=$PATH:$HOME/dotfiles/bin
 export PATH=$PATH:$HOME/scripts
 export PATH=$PATH:$HOME/scripts/bin
 export PATH=$PATH:~/.local/bin
