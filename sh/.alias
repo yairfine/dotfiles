@@ -55,7 +55,7 @@ alias scr="cd ~/scripts"
 alias repos="cd $REPOS_PATH"
 
 ## SSH
-alias sshag='eval "$(ssh-agent -s)"'
+alias sshag='eval "$(ssh-agent -s)"; ssha'
 
 # mkdir and copy recursive (parents=True)
 alias mkdirr="mkdir -p"
