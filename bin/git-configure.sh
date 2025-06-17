@@ -112,3 +112,5 @@ git config --global alias.bradar "! f() { [ ! -z \"\$1\" ] && BR=\$(git branch-f
 git config --global alias.merged "! f() { [ ! -z \"\$1\" ] && git for-each-ref --merged=\"\$1\" --format='%(refname:short)' refs/heads | grep -v -w -e \"\$1\" ; }; f"
 git config --global alias.showm "show --first-parent"
 git config --global alias.verify "log --oneline --show-signature"
+git config --global alias.contributor "! f() { git log --pretty=format: --name-only --author=\"\$@\" | grep -v '^$' | sort | uniq -c | sort -nr | awk '{ printf \" %-20s %s\\n\", \$2\"/\", \$1 }'| column -t | head -20 ; }; f"
+git config --global alias.contrib "contributor"
