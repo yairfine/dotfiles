@@ -113,4 +113,6 @@ git config --global alias.merged "! f() { [ ! -z \"\$1\" ] && git for-each-ref -
 git config --global alias.showm "show --first-parent"
 git config --global alias.verify "log --oneline --show-signature"
 git config --global alias.contributor "! f() { git log --pretty=format: --name-only --author=\"\$@\" | grep -v '^$' | sort | uniq -c | sort -nr | awk '{ printf \" %-20s %s\\n\", \$2\"/\", \$1 }'| column -t | head -20 ; }; f"
+git config --global alias.activity "! f() { git log --pretty=format:\"%ad\" --date=format:\"%Y-%m\" --author=\"\$@\" | sort | uniq -c | sort -k2 | awk '{print \$2\",\"\$1}' | (command -v termgraph >/dev/null 2>&1 && termgraph --title \"Commits History\" --color blue || cat) ; }; f"
 git config --global alias.contrib "contributor"
+git config --global alias.act "activity"
