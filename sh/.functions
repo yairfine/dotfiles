@@ -75,6 +75,13 @@ function rgs() {
     RIPGREP_CONFIG_PATH=$HOME/.ripgreprc rg $@ $(printf '%s\n' $EXPANDED_PATHS)
 }
 
+function rgse() {
+    local cmd=$(rgs --no-filename $@ | fzf | sed 's/#.*//; s/[[:space:]]*$//')
+    if [[ -n "$cmd" ]]; then
+        print -z "$cmd"
+    fi
+}
+
 function update {
     # update dotfiles
     pushd "$REPOS_PATH/dotfiles/"
@@ -170,4 +177,24 @@ function src() {
 
     source ${HOME}/scripts/.alias
     source ${REPOS_PATH}/scripts/.alias
+}
+
+function fssh() {
+    local selected_host
+    selected_host=$(egrep "^Host ([^*]+)$" $HOME/.ssh/config | sed 's/Host //' | fzf)
+
+    if [[ -n "$selected_host" ]]; then
+        ssh "$selected_host"
+    fi
+}
+
+# Browse and install Homebrew packages
+function fbrew() {
+    local inst=$(brew search $@ | fzf -m)
+
+    if [[ $inst ]]; then
+        for prog in $(echo $inst); do
+            brew install $prog
+        done
+    fi
 }

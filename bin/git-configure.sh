@@ -116,4 +116,5 @@ git config --global alias.contributor "! f() { git log --pretty=format: --name-o
 git config --global alias.activity "! f() { git log --pretty=format:\"%ad\" --date=format:\"%Y-%m\" --author=\"\$@\" | sort | uniq -c | sort -k2 | awk '{print \$2\",\"\$1}' | (command -v termgraph >/dev/null 2>&1 && termgraph --title \"Commits History\" --color blue || cat) ; }; f"
 git config --global alias.contrib "contributor"
 git config --global alias.act "activity"
-git config --global alias.sw "! f() { git for-each-ref --sort=-committerdate --format='%(refname:short)' refs/heads/ | (command -v fzf >/dev/null 2>&1 && fzf | xargs git switch || cat) ; }; f"
+git config --global alias.sw "! f() { git for-each-ref --sort=-committerdate --format='%(refname:short)' refs/heads/ | (command -v fzf >/dev/null 2>&1 && fzf --preview 'git show --stat --color=always {-1}' --bind 'enter:become(git switch {-1})' --height 40% --layout reverse || cat) ; }; f"
+git config --global alias.fadd "! f() { git status --porcelain | (command -v fzf >/dev/null 2>&1 && fzf -m --bind 'tab:toggle' --preview 'git diff --color=always \$(echo {} | cut -c4-)' | cut -c4- | xargs git add -v || cat) ; }; f"
