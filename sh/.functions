@@ -181,7 +181,7 @@ function src() {
 
 function fssh() {
     local selected_host
-    selected_host=$(egrep "^Host ([^*]+)$" $HOME/.ssh/config | sed 's/Host //' | fzf)
+    selected_host=$(egrep "^Host ([^*]+)$" $HOME/.ssh/config | sed 's/Host //' | fzf --height 40% --layout reverse)
 
     if [[ -n "$selected_host" ]]; then
         ssh "$selected_host"
