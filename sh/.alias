@@ -112,7 +112,7 @@ alias dockfix="defaults write com.apple.dock ResetLaunchPad -bool true; killall 
 alias rctl="remotectl"
 alias rcl="remotectl list"
 
-alias fkill='ps aux | fzf | awk "{print \$2}" | xargs kill'         # Kill process
-alias fkill9='ps aux | fzf | awk "{print \$2}" | xargs kill -9'     # Force kill process
+alias fkill='ps aux | (command -v fzf >/dev/null 2>&1 && fzf | awk "{print \$2}" | xargs kill || echo "fzf not installed" )'       # Kill process
+alias fkill9='ps aux | (command -v fzf >/dev/null 2>&1 && fzf | awk "{print \$2}" | xargs kill -9 || echo "fzf not installed" )'   # Force kill process
 
 alias reload="source ~/.zshrc ;"
