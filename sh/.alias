@@ -115,4 +115,6 @@ alias rcl="remotectl list"
 alias fkill='ps aux | (command -v fzf >/dev/null 2>&1 && fzf | awk "{print \$2}" | xargs kill || echo "fzf not installed" )'       # Kill process
 alias fkill9='ps aux | (command -v fzf >/dev/null 2>&1 && fzf | awk "{print \$2}" | xargs kill -9 || echo "fzf not installed" )'   # Force kill process
 
+alias fopen='file=$(find . -type f -not -path "*/.*" | fzf --height 60% --layout reverse --border --preview "if command -v bat > /dev/null 2>&1; then bat --color=always --style=numbers --line-range :50 {}; else head -50 {} | cat; fi") && [ -n "$file" ] && open "$file"'
+
 alias reload="source ~/.zshrc ;"
