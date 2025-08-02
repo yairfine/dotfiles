@@ -9,5 +9,6 @@ pkg-config
 cmake
 meson
 ninja
+fd
 ripgrep
 dust
