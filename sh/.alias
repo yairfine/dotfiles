@@ -7,8 +7,8 @@ alias gitpurge="git clean -xfd; git submodule foreach --recursive git clean -xfd
 alias gitgraph="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'--abbrev-commit --date=relative"
 
 # fetch/pull all git repos in $REPOS_PATH
-alias fetch-all="find \$REPOS_PATH -type d -maxdepth 1 -mindepth 1 -print -exec git -C {} fetch --all --prune \;"
-alias pull-all="find \$REPOS_PATH -type d -maxdepth 1 -mindepth 1 -print -exec git -C {} pull-all --fetch \;"
+alias fetch-all="fd -t d -d 1 . \$REPOS_PATH -x git -C {} fetch --all --prune"
+alias pull-all="fd -t d -d 1 . \$REPOS_PATH -x git -C {} pull-all --fetch"
 
 # SHA256 check-sum
 alias sha256="shasum -a 256"
@@ -115,7 +115,7 @@ alias rcl="remotectl list"
 alias fkill='ps aux | (command -v fzf >/dev/null 2>&1 && fzf | awk "{print \$2}" | xargs kill || echo "fzf not installed" )'       # Kill process
 alias fkill9='ps aux | (command -v fzf >/dev/null 2>&1 && fzf | awk "{print \$2}" | xargs kill -9 || echo "fzf not installed" )'   # Force kill process
 
-alias fopen='file=$(find . -type f -not -path "*/.*" | fzf --height 60% --layout reverse --border --preview "if command -v bat > /dev/null 2>&1; then bat --color=always --style=numbers --line-range :50 {}; else head -50 {} | cat; fi") && [ -n "$file" ] && open "$file"'
+alias fopen='file=$(fd -t f -H -E "*/.git" . | fzf --height 60% --layout reverse --border --preview "if command -v bat > /dev/null 2>&1; then bat --color=always --style=numbers --line-range :50 {}; else head -50 {} | cat; fi") && [ -n "$file" ] && open "$file"'
 alias fabs='fzf | xargs -I {} realpath "{}"'
 
 alias reload="source ~/.zshrc ;"
