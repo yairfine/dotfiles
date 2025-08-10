@@ -84,6 +84,7 @@ git config --global alias.graph "log --graph --oneline --decorate --branches --r
 git config --global alias.grel "graph-rel"
 git config --global alias.grelu "grel HEAD \"@{upstream}\""
 git config --global alias.amend "commit --amend"
+git config --global alias.fixup "commit --fixup"
 git config --global alias.ff "merge --ff-only"
 git config --global alias.pushf "push --force-with-lease"
 git config --global alias.unstage "restore --staged --progress"
