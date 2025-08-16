@@ -39,7 +39,7 @@ install-all: install-formulae install-casks
 
 # Pull latest changes from git
 git-pull:
-    git pull origin master
+    git pull --rebase --recurse-submodules origin master
 
 # Stow dotfiles (link configuration files)
 stow:
