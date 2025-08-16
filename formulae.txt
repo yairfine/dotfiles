@@ -10,5 +10,7 @@ cmake
 meson
 ninja
 fd
+fzf
 ripgrep
 dust
+just
