@@ -112,8 +112,8 @@ alias dockfix="defaults write com.apple.dock ResetLaunchPad -bool true; killall 
 alias rctl="remotectl"
 alias rcl="remotectl list"
 
-alias fkill='ps aux | (command -v fzf >/dev/null 2>&1 && fzf | awk "{print \$2}" | xargs kill || echo "fzf not installed" )'       # Kill process
-alias fkill9='ps aux | (command -v fzf >/dev/null 2>&1 && fzf | awk "{print \$2}" | xargs kill -9 || echo "fzf not installed" )'   # Force kill process
+alias fkill='ps aux | (command -v fzf >/dev/null 2>&1 && fzf --multi | awk "{print \$2}" | xargs kill || echo "fzf not installed" )'       # Kill process
+alias fkill9='ps aux | (command -v fzf >/dev/null 2>&1 && fzf --multi | awk "{print \$2}" | xargs kill -9 || echo "fzf not installed" )'   # Force kill process
 
 alias fopen='file=$(fd -t f -H -E "*/.git" . | fzf --height 60% --layout reverse --border --preview "if command -v bat > /dev/null 2>&1; then bat --color=always --style=numbers --line-range :50 {}; else head -50 {} | cat; fi") && [ -n "$file" ] && open "$file"'
 alias fabs='fzf | xargs -I {} realpath "{}"'
