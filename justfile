@@ -16,6 +16,10 @@ update: git-pull stow git-conf
 git-conf:
     ./bin/git-configure.sh
 
+# Install git scripts
+install-git-scripts: check
+    pushd git-scripts && sudo ./install.sh && popd
+
 # Install Homebrew formulae from formulae.txt
 install-formulae: check
     @echo "Installing Homebrew formulae..."
@@ -53,10 +57,6 @@ unstow: check
 restow: check
     stow -R sh -R bash -R zsh -R clang-format -R macos -R ripgrep
 
-# Install git scripts
-install-git-scripts: check
-    pushd git-scripts && sudo ./install.sh && popd
-
 # Check what files would be linked (dry run)
 dry-run: git-conf
     stow -n -S sh -S bash -S zsh -S clang-format -S macos -S ripgrep
@@ -67,7 +67,7 @@ check-broken-links:
     @find ~ -maxdepth 3 -type l ! -exec test -e {} \; -print 2>/dev/null
 
 # Clean up broken symlinks (WARNING: actually deletes them)
-delete-broken-links:
+delete-broken-links: check-broken-links
     @echo "Cleaning up broken symlinks in home directory..."
     @find ~ -maxdepth 3 -type l ! -exec test -e {} \; -print -delete 2>/dev/null
 
