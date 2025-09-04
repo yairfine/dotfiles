@@ -55,7 +55,7 @@ restow:
 
 # Install git scripts
 install-git-scripts:
-    ./git-scripts/install.sh
+    pushd git-scripts && sudo ./install.sh && popd
 
 # Check what files would be linked (dry run)
 dry-run:
