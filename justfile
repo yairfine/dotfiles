@@ -6,7 +6,7 @@ default:
     @just --list
 
 # Initial setup - install dotfiles and configure git
-setup:
+setup: check git-conf
     ./setup.sh --yes
 
 # Update dotfiles to latest version
@@ -17,7 +17,7 @@ git-conf:
     ./bin/git-configure.sh
 
 # Install Homebrew formulae from formulae.txt
-install-formulae:
+install-formulae: check
     @echo "Installing Homebrew formulae..."
     @if command -v brew >/dev/null 2>&1; then \
         brew install $(cat formulae.txt | tr '\n' ' '); \
@@ -26,7 +26,7 @@ install-formulae:
     fi
 
 # Install Homebrew casks from casks.txt
-install-casks:
+install-casks: check
     @echo "Installing Homebrew casks..."
     @if command -v brew >/dev/null 2>&1; then \
         brew install --cask $(cat casks.txt | tr '\n' ' '); \
@@ -42,23 +42,23 @@ git-pull:
     git pull --rebase --recurse-submodules origin master
 
 # Stow dotfiles (link configuration files)
-stow:
+stow: check
     stow -S sh -S bash -S zsh -S clang-format -S macos -S ripgrep
 
 # Unstow dotfiles (remove symlinks)
-unstow:
+unstow: check
     stow -D sh -D bash -D zsh -D clang-format -D macos -D ripgrep
 
 # Restow dotfiles (remove and relink)
-restow:
+restow: check
     stow -R sh -R bash -R zsh -R clang-format -R macos -R ripgrep
 
 # Install git scripts
-install-git-scripts:
+install-git-scripts: check
     pushd git-scripts && sudo ./install.sh && popd
 
 # Check what files would be linked (dry run)
-dry-run:
+dry-run: git-conf
     stow -n -S sh -S bash -S zsh -S clang-format -S macos -S ripgrep
 
 # Show broken symlinks (safe - only lists them)
@@ -80,7 +80,7 @@ check:
     @printf "zsh: "; command -v zsh >/dev/null && echo "✓" || echo "✗ not found"
 
 # Show status of dotfiles
-status:
+status: check
     @echo "=== Git Status ==="
     @git status --short
     @echo "\n=== Stow Status ==="
