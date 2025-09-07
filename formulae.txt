@@ -16,3 +16,4 @@ dust
 just
 stow
 parallel
+ccache
