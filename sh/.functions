@@ -198,3 +198,26 @@ function fbrew() {
         done
     fi
 }
+
+# Open file in VSCode with optional line:col - searches subdirs if not found
+codel() {
+    [ $# -eq 0 ] && { echo "Usage: codel <file[:line[:col]]>"; return 1; }
+
+    local arg="$1" filename="${1%%:*}" line_col="${1#*:}"
+    [[ "$arg" == "$line_col" ]] && line_col=""
+
+    if [ ! -f "$filename" ]; then
+        local found=$(fd --hidden -t f "^$(basename "$filename")$" 2>/dev/null)
+        [ -z "$found" ] && { echo "File '$filename' not found"; return 1; }
+
+        local count=$(echo "$found" | wc -l | tr -d ' ')
+        if [ "$count" -eq 1 ]; then
+            filename="$found"
+            echo "Found: $filename"
+        else
+            filename=$(echo "$found" | fzf --prompt="Select file: " --height=40% --reverse) || return 1
+        fi
+    fi
+
+    code --goto "${filename}${line_col:+:$line_col}"
+}
