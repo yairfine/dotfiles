@@ -9,7 +9,7 @@ stow_dotfiles() {
     fi
 
     echo "INSTALLING ENVIRONMENT FILES TO HOME DIR"
-    stow -S sh -S bash -S zsh -S clang-format -S macos -S ripgrep
+    stow -S sh -S bash -S zsh -S clang-format -S macos -S ripgrep -S starship
 }
 
 if [ "$1" == "--yes" -o "$1" == "-y" ]; then
