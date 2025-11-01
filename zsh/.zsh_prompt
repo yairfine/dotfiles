@@ -27,4 +27,10 @@
 # https://robotmoon.com/256-colors/
 # 197 - the color dir (pink)
 # 243 - the color user (grey)
-export PS1='%F{243}%n@%m%f %F{197}%1~%f %# '
+PS1='%F{243}%n@%m%f %F{197}%1~%f %# '
+
+if command -v starship &>/dev/null; then
+    eval "$(starship init zsh)"
+else
+    export PS1
+fi
