@@ -1,0 +1,93 @@
+
+
+# disable runtime info
+
+[python]
+disabled = true
+
+[nodejs]
+disabled = true
+
+[golang]
+disabled = true
+
+[rust]
+disabled = true
+
+[java]
+disabled = true
+
+[php]
+disabled = true
+
+[ruby]
+disabled = true
+
+[kotlin]
+disabled = true
+
+[swift]
+disabled = true
+
+[c]
+disabled = true
+
+[cmake]
+disabled = true
+
+[dart]
+disabled = true
+
+[deno]
+disabled = true
+
+[dotnet]
+disabled = true
+
+[elixir]
+disabled = true
+
+[elm]
+disabled = true
+
+[erlang]
+disabled = true
+
+[haskell]
+disabled = true
+
+[lua]
+disabled = true
+
+[nim]
+disabled = true
+
+[ocaml]
+disabled = true
+
+[perl]
+disabled = true
+
+[purescript]
+disabled = true
+
+[rlang]
+disabled = true
+
+[red]
+disabled = true
+
+[scala]
+disabled = true
+
+[solidity]
+disabled = true
+
+[terraform]
+disabled = true
+
+[vlang]
+disabled = true
+
+[zig]
+disabled = true
