@@ -47,7 +47,7 @@ git-pull:
 
 # Stow dotfiles (link configuration files)
 stow: check
-    stow -S sh -S bash -S zsh -S clang-format -S macos -S ripgrep
+    stow -S sh -S bash -S zsh -S clang-format -S macos -S ripgrep -S starship
 
 # Unstow dotfiles (remove symlinks)
 unstow: check
@@ -59,7 +59,7 @@ restow: check
 
 # Check what files would be linked (dry run)
 dry-run: git-conf
-    stow -n -S sh -S bash -S zsh -S clang-format -S macos -S ripgrep
+    stow -n -S sh -S bash -S zsh -S clang-format -S macos -S ripgrep -S starship
 
 # Show broken symlinks (safe - only lists them)
 check-broken-links:
@@ -84,4 +84,4 @@ status: check
     @echo "=== Git Status ==="
     @git status --short
     @echo "\n=== Stow Status ==="
-    @stow -n -S sh -S bash -S zsh -S clang-format -S macos -S ripgrep 2>&1 | grep -E "(LINK|UNLINK)" || echo "All files are properly linked"
+    @stow -n -S sh -S bash -S zsh -S clang-format -S macos -S ripgrep -S starship 2>&1 | grep -E "(LINK|UNLINK)" || echo "All files are properly linked"
