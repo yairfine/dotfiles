@@ -2,8 +2,33 @@
 [hostname]
 ssh_only = true
 
+[cmd_duration]
+min_time = 5_000
 
-# disable runtime info
+# Show DEVELOPER_DIR environment variable
+[env_var.DEVELOPER_DIR]
+variable = "DEVELOPER_DIR"
+format = "via [$env_value]($style) "
+
+[git_branch]
+truncation_length = 64
+
+[git_commit]
+tag_disabled = false
+
+# Git status - only show ahead/behind
+[git_status]
+ahead = "⇡${count}"
+behind = "⇣${count}"
+diverged = "⇡${ahead_count}⇣${behind_count}"
+format = '([\[$ahead_behind\]]($style) )'
+
+# Sudo indicator
+[sudo]
+disabled = false
+
+
+##### Disable all runtime info #####
 
 [python]
 disabled = true
