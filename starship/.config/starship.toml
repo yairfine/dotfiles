@@ -1,3 +1,6 @@
+# Hostname configuration
+[hostname]
+ssh_only = true
 
 
 # disable runtime info
