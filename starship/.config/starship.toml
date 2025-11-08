@@ -5,9 +5,14 @@ ssh_only = true
 [cmd_duration]
 min_time = 5_000
 
-# Show DEVELOPER_DIR environment variable
-[env_var.DEVELOPER_DIR]
-variable = "DEVELOPER_DIR"
+# Show SHELLXCODE environment variable
+[env_var.SHELLXCODE]
+variable = "SHELLXCODE"
+format = "via [$env_value]($style) "
+
+# Show DEVICE environment variable
+[env_var.DEVICE]
+variable = "DEVICE"
 format = "via [$env_value]($style) "
 
 [git_branch]
