@@ -2,6 +2,7 @@ git-lfs
 git-delta
 git-interactive-rebase-tool
 git-who
+git-absorb
 tree
 maccy
 wget
