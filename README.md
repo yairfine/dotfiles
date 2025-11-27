@@ -4,8 +4,8 @@
 ```bash
 git clone --recurse-submodules https://github.com/yairfine/dotfiles.git
 cd dotfiles
-chmod u+x setup.sh
-./setup.sh
+just setup
+source ~/.zshrc
 ```
 
 ## What's included

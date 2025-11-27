@@ -85,8 +85,7 @@ function rgse() {
 function update {
     # update dotfiles
     pushd "$REPOS_PATH/dotfiles/"
-    git pull --rebase --recurse-submodules
-    just update || ./setup.sh --yes
+    just update
     popd
 }
 

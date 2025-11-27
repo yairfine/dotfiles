@@ -6,11 +6,12 @@ default:
     @just --list
 
 # Initial setup - install dotfiles and configure git
-setup: check git-conf
-    ./setup.sh --yes
+setup: check stow git-conf
+    @echo "✅ Dotfiles setup complete!"
+    @echo "Now run: source ~/.zshrc"
 
 # Update dotfiles to latest version
-update: git-pull stow git-conf
+update: git-pull setup
 
 # Configure git with personal settings
 git-conf:
