@@ -1,5 +1,8 @@
 # Dotfiles management with just
 # Run `just --list` to see all available commands
+# Stow packages to manage
+
+STOW_PACKAGES := "sh bash zsh clang-format macos ripgrep starship"
 
 # Show all available commands
 default:
@@ -48,19 +51,19 @@ git-pull:
 
 # Stow dotfiles (link configuration files)
 stow: check
-    stow -S sh -S bash -S zsh -S clang-format -S macos -S ripgrep -S starship
+    stow -S {{ STOW_PACKAGES }}
 
 # Unstow dotfiles (remove symlinks)
 unstow: check
-    stow -D sh -D bash -D zsh -D clang-format -D macos -D ripgrep
+    stow -D {{ STOW_PACKAGES }}
 
 # Restow dotfiles (remove and relink)
 restow: check
-    stow -R sh -R bash -R zsh -R clang-format -R macos -R ripgrep
+    stow -R {{ STOW_PACKAGES }}
 
 # Check what files would be linked (dry run)
 dry-run: git-conf
-    stow -n -S sh -S bash -S zsh -S clang-format -S macos -S ripgrep -S starship
+    stow -n -S {{ STOW_PACKAGES }}
 
 # Show broken symlinks (safe - only lists them)
 check-broken-links:
@@ -85,4 +88,4 @@ status: check
     @echo "=== Git Status ==="
     @git status --short
     @echo "\n=== Stow Status ==="
-    @stow -n -S sh -S bash -S zsh -S clang-format -S macos -S ripgrep -S starship 2>&1 | grep -E "(LINK|UNLINK)" || echo "All files are properly linked"
+    @stow -n -S {{ STOW_PACKAGES }} 2>&1 | grep -E "(LINK|UNLINK)" || echo "All files are properly linked"
