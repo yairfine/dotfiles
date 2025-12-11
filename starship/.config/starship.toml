@@ -16,7 +16,7 @@ variable = "DEVICE"
 format = "via [$env_value]($style) "
 
 [git_branch]
-truncation_length = 64
+truncation_length = 80
 
 [git_commit]
 tag_disabled = false
