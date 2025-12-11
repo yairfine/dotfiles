@@ -39,6 +39,7 @@ git config --global filter.lfs.required "true"
 git config --global difftool.sourcetree.cmd "opendiff \"\$LOCAL\" \"\$REMOTE\""
 git config --global difftool.sourcetree.path ""
 git config --global difftool.vscode.cmd "code --wait --diff \$LOCAL \$REMOTE"
+git config --global mergetool.keepBackup false
 git config --global mergetool.sourcetree.cmd "/Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"\$LOCAL\" \"\$REMOTE\" -ancestor \"\$BASE\" -merge \"\$MERGED\""
 git config --global mergetool.sourcetree.trustexitcode "true"
 git config --global mergetool.bc3.trustexitcode "true"
