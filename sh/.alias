@@ -92,6 +92,8 @@ alias logos2="\$XCODE_PATH/Platforms/MacOSX.platform/Developer/SDKs/iOSHostAddit
 alias getmod="stat -f \"%A %N\"" # print mode (file permissions) of file
 alias bytes="stat -f \"%z %N\""   # print file size in Bytes. example: 'bytes *.bin'
 
+alias fdupes="fd --type file . --exec md5sum {} | sort --key 1 | awk '{print \$2, \$1}' | uniq --skip-fields=1 --all-repeated=prepend"
+
 alias tarlb="tar --use-compress-program=lbzip2"
 alias tarlbu="tar --use-compress-program=lbunzip2"
 alias tarpg="tar --use-compress-program=pigz"
