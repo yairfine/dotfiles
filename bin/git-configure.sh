@@ -124,3 +124,4 @@ git config --global alias.sw "! f() { git for-each-ref --sort=-committerdate --f
 git config --global alias.fadd "! f() { git status --porcelain | (command -v fzf >/dev/null 2>&1 && fzf -m --bind 'tab:toggle' --preview 'git diff --color=always \$(echo {} | cut -c4-)' | cut -c4- | xargs git add -v || cat) ; }; f"
 git config --global alias.weekly '! f() { git log --all --reflog --notes --author="$(git config user.name || echo "NotExists")" --since-as-filter="1 week ago" --format="%C(yellow)%h%C(reset) %s %C(green)(%ch)%C(reset)"; }; f'
 git config --global alias.last-week '! f() { git log --all --reflog --notes --author="$(git config user.name || echo "NotExists")" --since-as-filter="2 weeks ago" --until="1 week ago" --format="%C(yellow)%h%C(reset) %s %C(green)(%ch)%C(reset)"; }; f'
+git config --global alias.repo-name '! f() { basename "$(git rev-parse --show-toplevel)"; }; f'
