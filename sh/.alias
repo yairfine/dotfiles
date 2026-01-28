@@ -9,6 +9,7 @@ alias gitgraph="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Cr
 # fetch/pull all git repos in $REPOS_PATH
 alias fetch-all="fd -t d -d 1 . \$REPOS_PATH -x git -C {} fetch --all --prune"
 alias pull-all="fd -t d -d 1 . \$REPOS_PATH -x git -C {} pull-all --fetch"
+alias weekly="fd -t d -d 1 . \$REPOS_PATH -x bash -c 'output=\$(git -C \"{}\" -c color.ui=always weekly 2>/dev/null); if [[ -n \"\$output\" ]]; then git -C \"{}\" -c color.ui=always repo-name; echo \"\$output\"; echo; fi' \;"
 
 # SHA256 check-sum
 alias sha256="shasum -a 256"
