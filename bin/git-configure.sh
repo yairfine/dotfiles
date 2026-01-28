@@ -76,7 +76,7 @@ git config --global alias.cp "copy"
 git config --global alias.ft "fetch --tags"
 git config --global alias.clm "! clone_and_maintenance() { git cl \$1 && pushd \$(basename \$1 .git) && git mnt start && popd; }; clone_and_maintenance"
 git config --global alias.chp "cherry-pick"
-git config --global alias.ir "rebase --interactive --rebase-merges --autosquash --committer-date-is-author-date"
+git config --global alias.ir "rebase --interactive --rebase-merges --autosquash"
 git config --global alias.conf "config --global --edit"
 git config --global alias.gl "config --global --list"
 git config --global alias.alias "config --get-regexp '^alias'"
@@ -122,3 +122,6 @@ git config --global alias.contrib "contributor"
 git config --global alias.act "activity"
 git config --global alias.sw "! f() { git for-each-ref --sort=-committerdate --format='%(refname:short)' refs/heads/ | (command -v fzf >/dev/null 2>&1 && fzf --preview 'git show --stat --color=always {-1}' --bind 'enter:become(git switch {-1})' --height 40% --layout reverse || cat) ; }; f"
 git config --global alias.fadd "! f() { git status --porcelain | (command -v fzf >/dev/null 2>&1 && fzf -m --bind 'tab:toggle' --preview 'git diff --color=always \$(echo {} | cut -c4-)' | cut -c4- | xargs git add -v || cat) ; }; f"
+git config --global alias.weekly '! f() { git log --all --reflog --notes --author="$(git config user.name || echo "NotExists")" --since-as-filter="1 week ago" --format="%C(yellow)%h%C(reset) %s %C(green)(%ch)%C(reset)"; }; f'
+git config --global alias.last-week '! f() { git log --all --reflog --notes --author="$(git config user.name || echo "NotExists")" --since-as-filter="2 weeks ago" --until="1 week ago" --format="%C(yellow)%h%C(reset) %s %C(green)(%ch)%C(reset)"; }; f'
+git config --global alias.repo-name '! f() { basename "$(git rev-parse --show-toplevel)"; }; f'
