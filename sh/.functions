@@ -220,3 +220,44 @@ codel() {
 
     code --goto "${filename}${line_col:+:$line_col}"
 }
+
+# upload a directory full of files (not recursive) to dropbox
+dbx_putr() {
+    if [ $# -ne 2 ]; then
+        echo "Usage: $0 <src dir> <dst dir>"
+        echo "Example: $0 '/Users/yair/Downloads/photos/mytrip' '/Photos/mytrip'"
+        return 1
+    fi
+
+    local src_dir="$1"
+    local dst_dir="$2"
+    local total_files
+
+    if [ ! -d "$src_dir" ]; then
+        echo "Error: Source directory '$src_dir' does not exist"
+        return 1
+    fi
+
+    total_files=$(fd . "$src_dir" -t f | wc -l)
+
+    if [ -n "$NTHREADS" ]; then
+        threads="$NTHREADS"
+    else
+        threads="1"
+    fi
+
+    echo "Found $total_files files..."
+    echo "Uploading files from '$src_dir' to '$dst_dir'..."
+    echo "Using $threads threads"
+    echo ""
+
+    fd -j "$threads" . "$src_dir" -t f -x sh -c '
+    src_dir="$(realpath "$1")"
+    dst_dir=$2
+    src_file="$(realpath "{}")"
+    relpath="${src_file#${src_dir}/}"
+    dst_file="$dst_dir/$relpath"
+    echo "Uploading: $src_file -> $dst_file"
+    dbxcli put "$src_file" "$dst_file"
+    ' _ "$src_dir" "$dst_dir"
+}
