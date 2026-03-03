@@ -2,7 +2,7 @@
 # Run `just --list` to see all available commands
 # Stow packages to manage
 
-STOW_PACKAGES := "sh bash zsh clang-format macos ripgrep starship"
+STOW_PACKAGES := "sh bash zsh clang-format macos ripgrep starship lldb"
 
 # Show all available commands
 default:

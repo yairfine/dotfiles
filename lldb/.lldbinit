@@ -1,0 +1,1 @@
+command alias ila target modules lookup -a %1
