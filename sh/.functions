@@ -278,3 +278,34 @@ dbx_putr() {
 
     rm -f "$hash_file"
 }
+
+# Retry dbx_putr until all files are uploaded or max retries reached
+dbx_putr_retry() {
+    if [ $# -ne 2 ]; then
+        echo "Usage: dbx_putr_retry <src dir> <dst dir>"
+        return 1
+    fi
+
+    local max_retries="${DBX_MAX_RETRIES:-10}"
+    local attempt=1
+    local output
+
+    while [ "$attempt" -le "$max_retries" ]; do
+        echo "=== Attempt $attempt/$max_retries ==="
+        output=$(dbx_putr "$1" "$2" 2>&1 | tee /dev/tty)
+
+        if ! echo "$output" | rg --quiet "^UPLOAD:"; then
+            echo ""
+            echo "All files uploaded successfully."
+            return 0
+        fi
+
+        echo ""
+        echo "Some uploads remaining, retrying in 5s..."
+        sleep 5
+        attempt=$((attempt + 1))
+    done
+
+    echo "Gave up after $max_retries attempts. Some files may not have been uploaded." >&2
+    return 1
+}
