@@ -1,0 +1,23 @@
+#!/bin/sh
+# Get content_hash of a remote Dropbox file (empty string if not found)
+set -e
+
+if [ $# -ne 1 ]; then
+    echo "Usage: dbx-remote-hash <remote_path>" >&2
+    exit 1
+fi
+
+remote_path="$1"
+token=$(jq -r '.[""]["personal"]' ~/.config/dbxcli/auth.json)
+
+response=$(curl -s -X POST https://api.dropboxapi.com/2/files/get_metadata \
+    -H "Authorization: Bearer $token" \
+    -H "Content-Type: application/json" \
+    -d "{\"path\": \"$remote_path\"}")
+
+# Return empty if file not found
+if echo "$response" | jq -e '.error' >/dev/null 2>&1; then
+    exit 0
+fi
+
+echo "$response" | jq -r '.content_hash'

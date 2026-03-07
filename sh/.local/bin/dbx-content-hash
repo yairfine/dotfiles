@@ -1,0 +1,25 @@
+#!/bin/sh
+# Compute Dropbox content hash for a local file
+# Algorithm: split into 4MB blocks, SHA-256 each, SHA-256 the concatenated binary hashes
+set -e
+
+if [ $# -ne 1 ] || [ ! -f "$1" ]; then
+    echo "Usage: dbx-content-hash <file>" >&2
+    exit 1
+fi
+
+file="$1"
+block_size=4194304
+file_size=$(stat -f%z "$file")
+block_count=$(( (file_size + block_size - 1) / block_size ))
+[ "$block_count" -eq 0 ] && block_count=1
+
+all_hashes=""
+i=0
+while [ $i -lt $block_count ]; do
+    block_hash=$(dd if="$file" bs=$block_size skip=$i count=1 2>/dev/null | shasum -a 256 | cut -d' ' -f1)
+    all_hashes="${all_hashes}${block_hash}"
+    i=$((i + 1))
+done
+
+echo -n "$all_hashes" | xxd -r -p | shasum -a 256 | cut -d' ' -f1

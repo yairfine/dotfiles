@@ -253,11 +253,23 @@ dbx_putr() {
 
     fd -j "$threads" . "$src_dir" -t f -x sh -c '
     src_dir="$(realpath "$1")"
-    dst_dir=$2
+    dst_dir="$2"
     src_file="$(realpath "{}")"
     relpath="${src_file#${src_dir}/}"
     dst_file="$dst_dir/$relpath"
-    echo "Uploading: $src_file -> $dst_file"
-    dbxcli put "$src_file" "$dst_file"
+
+    remote_hash=$(dbx-remote-hash "$dst_file")
+
+    if [ -z "$remote_hash" ]; then
+        echo "UPLOAD: $relpath"
+        dbxcli put "$src_file" "$dst_file"
+    else
+        local_hash=$(dbx-content-hash "$src_file")
+        if [ "$remote_hash" = "$local_hash" ]; then
+            echo "SKIP (identical): $relpath"
+        else
+            echo "ERROR (hash mismatch): $relpath (local=$local_hash remote=$remote_hash)" >&2
+        fi
+    fi
     ' _ "$src_dir" "$dst_dir"
 }
