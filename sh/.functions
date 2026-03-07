@@ -221,7 +221,7 @@ codel() {
     code --goto "${filename}${line_col:+:$line_col}"
 }
 
-# upload a directory full of files (not recursive) to dropbox
+# upload a directory full of files to dropbox, skipping already-uploaded files by content hash
 dbx_putr() {
     if [ $# -ne 2 ]; then
         echo "Usage: $0 <src dir> <dst dir>"
@@ -251,25 +251,30 @@ dbx_putr() {
     echo "Using $threads threads"
     echo ""
 
+    echo "Fetching remote hashes..."
+    local hash_file
+    hash_file=$(mktemp)
+    dbx-remote-dir-hashes "$dst_dir" > "$hash_file"
+    echo "Found $(wc -l < "$hash_file" | tr -d ' ') files on remote"
+    echo ""
+
     fd -j "$threads" . "$src_dir" -t f -x sh -c '
     src_dir="$(realpath "$1")"
     dst_dir="$2"
+    hash_file="$3"
     src_file="$(realpath "{}")"
     relpath="${src_file#${src_dir}/}"
     dst_file="$dst_dir/$relpath"
 
-    remote_hash=$(dbx-remote-hash "$dst_file")
+    local_hash=$(dbx-content-hash "$src_file")
 
-    if [ -z "$remote_hash" ]; then
+    if rg --quiet --line-regexp "$local_hash" "$hash_file"; then
+        echo "SKIP (identical): $relpath"
+    else
         echo "UPLOAD: $relpath"
         dbxcli put "$src_file" "$dst_file"
-    else
-        local_hash=$(dbx-content-hash "$src_file")
-        if [ "$remote_hash" = "$local_hash" ]; then
-            echo "SKIP (identical): $relpath"
-        else
-            echo "ERROR (hash mismatch): $relpath (local=$local_hash remote=$remote_hash)" >&2
-        fi
     fi
-    ' _ "$src_dir" "$dst_dir"
+    ' _ "$src_dir" "$dst_dir" "$hash_file"
+
+    rm -f "$hash_file"
 }

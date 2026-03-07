@@ -1,0 +1,33 @@
+#!/bin/sh
+# List all content hashes for files in a remote Dropbox directory (recursive)
+# Outputs one content_hash per line
+set -e
+
+if [ $# -ne 1 ]; then
+    echo "Usage: dbx-remote-dir-hashes <remote_dir>" >&2
+    exit 1
+fi
+
+remote_dir="$1"
+token=$(jq -r '.[""]["personal"]' ~/.config/dbxcli/auth.json)
+
+response=$(curl -s -X POST https://api.dropboxapi.com/2/files/list_folder \
+    -H "Authorization: Bearer $token" \
+    -H "Content-Type: application/json" \
+    -d "{\"path\": \"$remote_dir\", \"recursive\": true}")
+
+if echo "$response" | jq -e '.error' >/dev/null 2>&1; then
+    echo "Error: $(echo "$response" | jq -r '.error_summary')" >&2
+    exit 1
+fi
+
+echo "$response" | jq -r '.entries[] | select(.content_hash) | .content_hash'
+
+while [ "$(echo "$response" | jq -r '.has_more')" = "true" ]; do
+    cursor=$(echo "$response" | jq -r '.cursor')
+    response=$(curl -s -X POST https://api.dropboxapi.com/2/files/list_folder/continue \
+        -H "Authorization: Bearer $token" \
+        -H "Content-Type: application/json" \
+        -d "{\"cursor\": \"$cursor\"}")
+    echo "$response" | jq -r '.entries[] | select(.content_hash) | .content_hash'
+done
