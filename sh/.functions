@@ -297,7 +297,7 @@ dbx_putr_retry() {
         if ! echo "$output" | rg --quiet "^UPLOAD:"; then
             echo ""
             echo "All files uploaded successfully."
-            return 0
+            break
         fi
 
         echo ""
@@ -306,6 +306,21 @@ dbx_putr_retry() {
         attempt=$((attempt + 1))
     done
 
-    echo "Gave up after $max_retries attempts. Some files may not have been uploaded." >&2
-    return 1
+    if [ "$attempt" -gt "$max_retries" ]; then
+        echo "Gave up after $max_retries attempts. Some files may not have been uploaded." >&2
+    fi
+
+    local local_count remote_count
+    local_count=$(fd . "$1" -t f | wc -l | tr -d ' ')
+    remote_count=$(dbx-remote-dir-hashes "$2" | wc -l | tr -d ' ')
+
+    echo ""
+    echo "=== Verification ==="
+    echo "Local files:  $local_count"
+    echo "Remote files: $remote_count"
+    if [ "$local_count" -eq "$remote_count" ]; then
+        echo "All files accounted for."
+    else
+        echo "WARNING: File count mismatch! (diff: $((local_count - remote_count)))" >&2
+    fi
 }
