@@ -9,20 +9,14 @@ usage() {
 
 [[ $# -ne 2 ]] && usage
 
-input_dir="$1"
-output_dir="$2"
+input_dir="$(cd "$1" && pwd)"
+mkdir -p "$2"
+output_dir="$(cd "$2" && pwd)"
 
-if [[ ! -d "$input_dir" ]]; then
-    echo "Error: Input directory '$input_dir' does not exist."
-    exit 1
-fi
-
-if [[ "$(cd "$input_dir" && pwd)" == "$(mkdir -p "$output_dir" && cd "$output_dir" && pwd)" ]]; then
+if [[ "$input_dir" == "$output_dir" ]]; then
     echo "Error: Input and output directories must be different."
     exit 1
 fi
-
-mkdir -p "$output_dir"
 
 count=0
 while IFS= read -r -d '' file; do
