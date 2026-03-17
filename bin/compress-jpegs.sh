@@ -25,7 +25,7 @@ while IFS= read -r -d '' file; do
         basename="$(basename "$file")"
         outfile="$output_dir/${basename%.*}_compressed.jpg"
         echo "Compressing: $basename ($(( size / 1024 / 1024 ))MB)"
-        sips -s format jpeg -s formatOptions 75 "$file" --out "$outfile"
+        sips -s format jpeg -s formatOptions 50 "$file" --out "$outfile"
         count=$((count + 1))
     fi
 done < <(find "$input_dir" -maxdepth 1 -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.heic' -o -iname '*.heif' -o -iname '*.hif' \) -print0)
