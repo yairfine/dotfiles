@@ -5,7 +5,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 usage() {
     echo "Usage: $(basename "$0") <capture_dir>"
-    echo "Organizes Fuji captures: RAWs, originals, and compressed JPEGs."
+    echo "Organizes Fuji captures: RAWs, stills, and compressed JPEGs."
     exit 1
 }
 
@@ -17,11 +17,11 @@ echo "Organizing captures in: $capture_dir"
 echo ""
 
 raws_dir="$capture_dir/raws"
-originals_dir="$capture_dir/originals"
+stills_dir="$capture_dir/stills"
 shared_dir="$capture_dir/shared-small"
 
 echo "Creating directories..."
-mkdir -v -p "$raws_dir" "$originals_dir" "$shared_dir"
+mkdir -v -p "$raws_dir" "$stills_dir" "$shared_dir"
 echo ""
 
 # Move RAW files
@@ -30,15 +30,15 @@ find "$capture_dir" -maxdepth 1 -type f \( -iname '*.raf' -o -iname '*.raw' \) -
 echo ""
 
 # Move JPEG and HEIF files
-echo "Moving JPEG/HEIF files to originals/..."
-find "$capture_dir" -maxdepth 1 -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.heic' -o -iname '*.heif' -o -iname '*.hif' \) -exec mv -v {} "$originals_dir/" \;
+echo "Moving JPEG/HEIF files to stills/..."
+find "$capture_dir" -maxdepth 1 -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.heic' -o -iname '*.heif' -o -iname '*.hif' \) -exec mv -v {} "$stills_dir/" \;
 echo ""
 
 # Compress
 echo "Compressing images to shared-small/..."
-"$SCRIPT_DIR/compress-jpegs.sh" "$originals_dir" "$shared_dir"
+"$SCRIPT_DIR/compress-jpegs.sh" "$stills_dir" "$shared_dir"
 
 echo "Done. Structure:"
 echo "  $raws_dir"
-echo "  $originals_dir"
+echo "  $stills_dir"
 echo "  $shared_dir"
