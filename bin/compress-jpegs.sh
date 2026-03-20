@@ -3,7 +3,7 @@ set -euo pipefail
 
 usage() {
     echo "Usage: $(basename "$0") <input_dir> <output_dir>"
-    echo "Compresses JPEGs/HEIF larger than 10MB to JPEG using macOS sips while preserving metadata."
+    echo "Compresses JPEGs/HEIF to JPEG using macOS sips while preserving metadata."
     exit 1
 }
 
@@ -20,14 +20,12 @@ fi
 
 count=0
 while IFS= read -r -d '' file; do
+    basename="$(basename "$file")"
     size=$(stat -f%z "$file" 2>/dev/null || stat -c%s "$file" 2>/dev/null)
-    if (( size > 10 * 1024 * 1024 )); then
-        basename="$(basename "$file")"
-        outfile="$output_dir/${basename%.*}_compressed.jpg"
-        echo "Compressing: $basename ($(( size / 1024 / 1024 ))MB)"
-        sips -s format jpeg -s formatOptions 50 "$file" --out "$outfile"
-        count=$((count + 1))
-    fi
+    outfile="$output_dir/${basename%.*}_compressed.jpg"
+    echo "Compressing: $basename ($(( size / 1024 / 1024 ))MB)"
+    sips -s format jpeg -s formatOptions 50 "$file" --out "$outfile"
+    count=$((count + 1))
 done < <(find "$input_dir" -maxdepth 1 -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.heic' -o -iname '*.heif' -o -iname '*.hif' \) -print0)
 
 echo "Done. Compressed $count file(s) to $output_dir"
