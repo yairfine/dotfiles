@@ -2,12 +2,14 @@
 set -euo pipefail
 
 usage() {
-    echo "Usage: $(basename "$0") <input_dir> <output_dir>"
+    echo "Usage: $(basename "$0") <input_dir> <output_dir> [quality=50]"
     echo "Compresses JPEGs/HEIF to JPEG using macOS sips while preserving metadata."
     exit 1
 }
 
-[[ $# -ne 2 ]] && usage
+[[ $# -lt 2 || $# -gt 3 ]] && usage
+
+quality="${3:-50}"
 
 input_dir="$(cd "$1" && pwd)"
 mkdir -p "$2"
@@ -18,13 +20,16 @@ if [[ "$input_dir" == "$output_dir" ]]; then
     exit 1
 fi
 
+echo "Compressing from $input_dir to $output_dir (quality: $quality)"
+echo ""
+
 count=0
 while IFS= read -r -d '' file; do
     basename="$(basename "$file")"
     size=$(stat -f%z "$file" 2>/dev/null || stat -c%s "$file" 2>/dev/null)
     outfile="$output_dir/${basename%.*}_compressed.jpg"
     echo "Compressing: $basename ($(( size / 1024 / 1024 ))MB)"
-    sips -s format jpeg -s formatOptions 50 "$file" --out "$outfile"
+    sips -s format jpeg -s formatOptions "$quality" "$file" --out "$outfile"
     count=$((count + 1))
 done < <(find "$input_dir" -maxdepth 1 -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.heic' -o -iname '*.heif' -o -iname '*.hif' \) -print0)
 
