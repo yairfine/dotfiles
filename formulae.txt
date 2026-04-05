@@ -18,3 +18,5 @@ just
 stow
 parallel
 ccache
+starship
+bat
