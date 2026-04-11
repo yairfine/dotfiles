@@ -5,3 +5,5 @@ out
 compile_commands.json
 .cache
 .claude/
+
+**/*auth*
