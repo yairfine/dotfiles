@@ -51,6 +51,7 @@ git-pull:
 
 # Stow dotfiles (link configuration files)
 stow: check
+    mkdir -p ~/.config/
     stow -S {{ STOW_PACKAGES }}
 
 # Unstow dotfiles (remove symlinks)
