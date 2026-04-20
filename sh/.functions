@@ -178,6 +178,14 @@ function src() {
     source ${REPOS_PATH}/scripts/.alias
 }
 
+# Search history and place selected command on the prompt
+function fhist() {
+    local cmd=$(fc -ln 1 | tail -r | awk '{sub(/^[[:space:]]+/,"")} !seen[$0]++' | fzf --height 40% --layout reverse)
+    if [[ -n "$cmd" ]]; then
+        print -z "$cmd"
+    fi
+}
+
 function fssh() {
     local selected_host
     selected_host=$(egrep "^Host ([^*]+)$" $HOME/.ssh/config | sed 's/Host //' | fzf --height 40% --layout reverse)
