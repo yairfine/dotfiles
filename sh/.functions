@@ -68,15 +68,20 @@ function csu {
     done
 }
 
-function rgs() {
+function _rgs_raw() {
     PATHS=$(printf '%s\n' "${RG_SEARCH_PATH//:/ }")
     EXPANDED_PATHS=$(eval "echo $PATHS")
 
-    RIPGREP_CONFIG_PATH=$HOME/.ripgreprc rg $@ $(printf '%s\n' $EXPANDED_PATHS)
+    RIPGREP_CONFIG_PATH=$HOME/.config/ripgrep/config-rgs rg $@ $(printf '%s\n' $EXPANDED_PATHS)
+}
+
+function rgs() {
+    _rgs_raw --no-filename --color=always $@ \
+        | perl -pe 's/(.*)# ?(.*)/\n# $2\n$1/'
 }
 
 function rgse() {
-    local cmd=$(rgs --no-filename $@ | fzf | sed 's/#.*//; s/[[:space:]]*$//')
+    local cmd=$(_rgs_raw --no-filename $@ | fzf | sed 's/#.*//; s/[[:space:]]*$//')
     if [[ -n "$cmd" ]]; then
         print -z "$cmd"
     fi

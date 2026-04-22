@@ -21,6 +21,7 @@ export PATH=$PATH:/opt/brew/opt/ccache/libexec
 export PATH=$PATH:$XCODE_PATH/Toolchains/XcodeDefault.xctoolchain/usr/local/bin # clang-format path
 
 export RG_SEARCH_PATH="$REPOS_PATH/*-cheatsheet"
+export RIPGREP_CONFIG_PATH="$HOME/.config/ripgrep/config"
 
 # Set the exact colors (fb - forground+background) of every type of file
 # Set LSCOLORS (FreeBSD / macOS).
