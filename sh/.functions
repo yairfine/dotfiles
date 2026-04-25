@@ -260,7 +260,18 @@ dbx_putr() {
     fi
 
     echo "Found $total_files files..."
-    echo "Uploading files from '$src_dir' to '$dst_dir'..."
+
+    local large_files
+    large_files=$(fd . --base-directory "$src_dir" -t f --size +100m)
+    if [ -n "$large_files" ]; then
+        local large_count
+        large_count=$(echo "$large_files" | wc -l | tr -d ' ')
+        echo "Skipping $large_count files over 100MB:"
+        echo "$large_files" | sed 's/^/  /'
+        echo ""
+    fi
+
+    echo "Uploading eligible files from '$src_dir' to '$dst_dir'..."
     echo "Using $threads threads"
     echo ""
 
@@ -271,7 +282,7 @@ dbx_putr() {
     echo "Found $(wc -l < "$hash_file" | tr -d ' ') files on remote"
     echo ""
 
-    fd -j "$threads" . "$src_dir" -t f -x sh -c '
+    fd -j "$threads" . "$src_dir" -t f --size -100m -x sh -c '
     src_dir="$(realpath "$1")"
     dst_dir="$2"
     hash_file="$3"
@@ -299,13 +310,15 @@ dbx_putr_retry() {
         return 1
     fi
 
+    echo "Starting"
+
     local max_retries="${DBX_MAX_RETRIES:-10}"
     local attempt=1
     local output
 
     while [ "$attempt" -le "$max_retries" ]; do
         echo "=== Attempt $attempt/$max_retries ==="
-        output=$(NTHREADS=8 dbx_putr "$1" "$2" 2>&1 | tee /dev/tty)
+        output=$(NTHREADS="${NTHREADS:-4}" dbx_putr "$1" "$2" 2>&1 | tee /dev/tty)
 
         if ! echo "$output" | rg --quiet "^UPLOAD:"; then
             echo ""
@@ -323,17 +336,23 @@ dbx_putr_retry() {
         echo "Gave up after $max_retries attempts. Some files may not have been uploaded." >&2
     fi
 
-    local local_count remote_count
+    local local_count remote_count large_count eligible
     local_count=$(fd . "$1" -t f | wc -l | tr -d ' ')
+    large_count=$(fd . "$1" -t f --size +100m | wc -l | tr -d ' ')
+    eligible=$((local_count - large_count))
     remote_count=$(dbx-remote-dir-hashes "$2" | wc -l | tr -d ' ')
 
     echo ""
     echo "=== Verification ==="
     echo "Local files:  $local_count"
     echo "Remote files: $remote_count"
-    if [ "$local_count" -eq "$remote_count" ]; then
-        echo "All files accounted for."
+    if [ "$large_count" -gt 0 ]; then
+        echo "Skipped (>100MB): $large_count"
+        echo "Eligible: $eligible"
+    fi
+    if [ "$remote_count" -ge "$eligible" ]; then
+        echo "All eligible files accounted for."
     else
-        echo "WARNING: File count mismatch! (diff: $((local_count - remote_count)))" >&2
+        echo "WARNING: File count mismatch! (expected: $eligible, got: $remote_count)" >&2
     fi
 }
