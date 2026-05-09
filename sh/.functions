@@ -356,3 +356,32 @@ dbx_putr_retry() {
         echo "WARNING: File count mismatch! (expected: $eligible, got: $remote_count)" >&2
     fi
 }
+
+fuji_import() {
+    local src="/Volumes/Untitled/DCIM/100_FUJI"
+    local date=$(date "+%Y-%b-%d")
+    local camera="xt50"
+    local dst="$HOME/Downloads/fujifilm $camera $date"
+    local dbx_dst="/Photos/Fujifilm/$camera/$date"
+
+    if [ ! -d "$src" ]; then
+        echo "Error: SD card not found at $src" >&2
+        return 1
+    fi
+
+    mkdir -p "$dst"
+    caffeinate -i -m -s -u rsync -avhP "$src/" "$dst" || return 1
+
+    local fclones_output
+    fclones_output=$(fclones group "$src/" "$dst" | tee /dev/tty)
+    local src_count=$(fd . "$src" -t f | wc -l | tr -d ' ')
+    local clone_groups=$(echo "$fclones_output" | awk '/^# Total:/ { print $(NF-1) }')
+    if [ "$clone_groups" != "$src_count" ]; then
+        echo "ERROR: Expected $src_count clone groups but found ${clone_groups:-0}" >&2
+        return 1
+    fi
+    echo "Clone check passed: $clone_groups/$src_count files verified"
+
+    prepare_fuji_captures.sh "$dst"
+    dbx_putr_retry "$dst" "$dbx_dst"
+}
