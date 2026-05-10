@@ -50,6 +50,16 @@ echo ""
 echo "Compressing images to wa/..."
 "$SCRIPT_DIR/compress-jpegs.sh" "$stills_dir" "$wa_dir" 10
 
+cat > "$capture_dir/README.md" <<'EOF'
+# Capture Directory
+
+- `raws/` — RAW sensor files (.raf, .raw)
+- `stills/` — Full-resolution JPEG/HEIF images
+- `shared-small/` — Compressed JPEGs for sharing
+- `wa/` — Compressed JPEGs for WhatsApp
+- `videos/` — Video files (.mov, .mp4, .avi, .mkv)
+EOF
+
 echo "Done. Structure:"
 echo "  $raws_dir"
 echo "  $stills_dir"
