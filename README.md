@@ -4,6 +4,7 @@
 ```bash
 git clone --recurse-submodules https://github.com/yairfine/dotfiles.git
 cd dotfiles
+brew install stow just
 just setup
 source ~/.zshrc
 ```
