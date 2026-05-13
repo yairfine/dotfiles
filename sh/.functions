@@ -359,7 +359,7 @@ dbx_putr_retry() {
 
 fuji_import() {
     local src="/Volumes/Untitled/DCIM/100_FUJI"
-    local date=$(date "+%Y-%b-%d")
+    local date=$(LC_TIME=C date "+%Y-%b-%d")
     local camera="xt50"
     local dst="$HOME/Downloads/fujifilm $camera $date"
     local dbx_dst="/Photos/Fujifilm/$camera/$date"
