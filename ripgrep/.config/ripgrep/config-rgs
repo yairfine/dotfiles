@@ -8,8 +8,8 @@
 # exclude .git database dir
 --glob=!.git/
 
-# case insensitively if the pattern is all lowercase
---smart-case
+# case insensitively
+--ignore-case
 
 # don't show line numbers
 --no-line-number
