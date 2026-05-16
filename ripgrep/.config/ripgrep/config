@@ -3,3 +3,6 @@
 
 # Follow symbolic links
 --follow
+
+# exclude .git database dir
+--glob=!.git/
