@@ -13,7 +13,7 @@ src="$1"
 dst="$2"
 token=$(jq -r '.[""]["personal"]' ~/.config/dbxcli/auth.json)
 
-chunk_size=$((64 * 1024 * 1024))
+chunk_size=$((16 * 1024 * 1024))
 file_size=$(stat -f%z "$src")
 
 # POST to a Dropbox content endpoint with raw body on stdin and a JSON arg
