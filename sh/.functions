@@ -372,4 +372,7 @@ fuji_import() {
 
     prepare_fuji_captures.sh "$dst"
     dbx_putr_retry "$dst" "$dbx_dst"
+
+    echo "$dst"
+    echo "Done"
 }
