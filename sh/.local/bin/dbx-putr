@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+# upload a directory full of files to dropbox, skipping already-uploaded files by content hash
+set -eu
+
+if [ $# -ne 2 ]; then
+    echo "Usage: $0 <src dir> <dst dir>"
+    echo "Example: $0 '/Users/yair/Downloads/photos/mytrip' '/Photos/mytrip'"
+    exit 1
+fi
+
+src_dir="$1"
+dst_dir="$2"
+
+if [ ! -d "$src_dir" ]; then
+    echo "Error: Source directory '$src_dir' does not exist"
+    exit 1
+fi
+
+total_files=$(fd . "$src_dir" -t f | wc -l)
+threads="${NTHREADS:-1}"
+
+echo "Found $total_files files..."
+
+echo "Uploading eligible files from '$src_dir' to '$dst_dir'..."
+echo "Using $threads threads"
+echo ""
+
+echo "Fetching remote hashes..."
+hash_file=$(mktemp)
+dbx-remote-dir-hashes "$dst_dir" > "$hash_file"
+echo "Found $(wc -l < "$hash_file" | tr -d ' ') files on remote"
+echo ""
+
+# Per-file failures should not abort the run; the retry wrapper relies on
+# UPLOAD: lines remaining in the output to decide whether to try again.
+fd -j "$threads" . "$src_dir" -t f -x sh -c '
+src_dir="$(realpath "$1")"
+dst_dir="$2"
+hash_file="$3"
+src_file="$(realpath "{}")"
+relpath="${src_file#${src_dir}/}"
+dst_file="$dst_dir/$relpath"
+
+local_hash=$(dbx-content-hash "$src_file")
+
+if rg --quiet --line-regexp "$local_hash" "$hash_file"; then
+    echo "SKIP (identical): $relpath"
+else
+    echo "UPLOAD: $relpath"
+    if [ "$(stat -f%z "$src_file")" -gt $((100 * 1024 * 1024)) ]; then
+        dbx-put-large "$src_file" "$dst_file"
+    else
+        dbxcli put "$src_file" "$dst_file"
+    fi
+fi
+' _ "$src_dir" "$dst_dir" "$hash_file" || true
+
+rm -f "$hash_file"

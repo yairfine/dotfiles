@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+# Retry dbx-putr until all files are uploaded or max retries reached
+set -eu
+
+if [ $# -ne 2 ]; then
+    echo "Usage: $0 <src dir> <dst dir>"
+    exit 1
+fi
+
+echo "Starting"
+
+max_retries="${DBX_MAX_RETRIES:-10}"
+attempt=1
+
+# pipefail intentionally unset: dbx-putr may exit non-zero on per-file failures,
+# but we still want the captured output (UPLOAD: lines) to drive the retry.
+while [ "$attempt" -le "$max_retries" ]; do
+    echo "=== Attempt $attempt/$max_retries ==="
+    output=$(NTHREADS="${NTHREADS:-4}" dbx-putr "$1" "$2" 2>&1 | tee /dev/tty)
+
+    if ! echo "$output" | rg --quiet "^UPLOAD:"; then
+        echo ""
+        echo "All files uploaded successfully."
+        break
+    fi
+
+    echo ""
+    echo "Some uploads remaining, retrying in 5s..."
+    sleep 5
+    attempt=$((attempt + 1))
+done
+
+if [ "$attempt" -gt "$max_retries" ]; then
+    echo "Gave up after $max_retries attempts. Some files may not have been uploaded." >&2
+fi
+
+local_count=$(fd . "$1" -t f | wc -l | tr -d ' ')
+remote_count=$(dbx-remote-dir-hashes "$2" | wc -l | tr -d ' ')
+
+echo ""
+echo "=== Verification ==="
+echo "Local files:  $local_count"
+echo "Remote files: $remote_count"
+if [ "$remote_count" -ge "$local_count" ]; then
+    echo "All files accounted for."
+else
+    echo "WARNING: File count mismatch! (expected: $local_count, got: $remote_count)" >&2
+fi
