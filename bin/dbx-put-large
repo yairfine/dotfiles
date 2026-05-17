@@ -12,6 +12,7 @@ fi
 src="$1"
 dst="$2"
 token=$(jq -r '.[""]["personal"]' ~/.config/dbxcli/auth.json)
+api="https://content.dropboxapi.com/2"
 
 chunk_size=$((16 * 1024 * 1024))
 file_size=$(stat -f%z "$src")
@@ -20,7 +21,8 @@ file_size=$(stat -f%z "$src")
 # header. Prints response body on success; prints body to stderr and returns
 # non-zero on HTTP error so the caller (and set -e) sees the real error_summary.
 dbx_post() {
-    _url=$1; _arg=$2
+    _endpoint=$1; _arg=$2
+    _url="$api/$_endpoint"
     _body=$(mktemp)
     _code=$(curl -sS -o "$_body" -w '%{http_code}' -X POST "$_url" \
         -H "Authorization: Bearer $token" \
@@ -38,7 +40,7 @@ dbx_post() {
     rm -f "$_body"
 }
 
-start_resp=$(dbx_post https://content.dropboxapi.com/2/files/upload_session/start \
+start_resp=$(dbx_post files/upload_session/start \
     '{"close":false}' < /dev/null)
 session_id=$(echo "$start_resp" | jq -r .session_id)
 
@@ -52,7 +54,7 @@ while [ $((offset + chunk_size)) -lt "$file_size" ]; do
     arg=$(jq -nca --arg sid "$session_id" --argjson off "$offset" \
         '{close:false, cursor:{session_id:$sid, offset:$off}}')
     tail -c "+$((offset + 1))" "$src" | head -c "$chunk_size" \
-      | dbx_post https://content.dropboxapi.com/2/files/upload_session/append_v2 "$arg" \
+      | dbx_post files/upload_session/append_v2 "$arg" \
       > /dev/null
     offset=$((offset + chunk_size))
 done
@@ -66,7 +68,7 @@ arg=$(jq -nca \
       commit:{path:$path, mode:"add", autorename:false, mute:false, strict_conflict:false}}')
 
 finish_resp=$(tail -c "+$((offset + 1))" "$src" \
-  | dbx_post https://content.dropboxapi.com/2/files/upload_session/finish "$arg")
+  | dbx_post files/upload_session/finish "$arg")
 
 remote_hash=$(echo "$finish_resp" | jq -r .content_hash)
 if [ "$remote_hash" != "$content_hash" ]; then
