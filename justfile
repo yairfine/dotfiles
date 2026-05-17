@@ -3,6 +3,8 @@
 # Stow packages to manage
 
 STOW_PACKAGES := "sh bash zsh clang-format macos ripgrep starship lldb"
+HOME_TARGET := env_var('HOME')
+BIN_TARGET := "/usr/local/bin"
 
 # Show all available commands
 default:
@@ -52,19 +54,23 @@ git-pull:
 # Stow dotfiles (link configuration files)
 stow: check
     mkdir -p ~/.config/
-    stow -S {{ STOW_PACKAGES }}
+    stow -t {{ HOME_TARGET }} -S {{ STOW_PACKAGES }}
+    sudo stow -t {{ BIN_TARGET }} -S bin
 
 # Unstow dotfiles (remove symlinks)
 unstow: check
-    stow -D {{ STOW_PACKAGES }}
+    stow -t {{ HOME_TARGET }} -D {{ STOW_PACKAGES }}
+    sudo stow -t {{ BIN_TARGET }} -D bin
 
 # Restow dotfiles (remove and relink)
 restow: check
-    stow -R {{ STOW_PACKAGES }}
+    stow -t {{ HOME_TARGET }} -R {{ STOW_PACKAGES }}
+    sudo stow -t {{ BIN_TARGET }} -R bin
 
 # Check what files would be linked (dry run)
 dry-run: git-conf
-    stow -n -S {{ STOW_PACKAGES }}
+    stow -t {{ HOME_TARGET }} -n -S {{ STOW_PACKAGES }}
+    stow -t {{ BIN_TARGET }} -n -S bin
 
 # Show broken symlinks (safe - only lists them)
 check-broken-links:
@@ -89,4 +95,5 @@ status: check
     @echo "=== Git Status ==="
     @git status --short
     @echo "\n=== Stow Status ==="
-    @stow -n -S {{ STOW_PACKAGES }} 2>&1 | grep -E "(LINK|UNLINK)" || echo "All files are properly linked"
+    @stow -t {{ HOME_TARGET }} -n -S {{ STOW_PACKAGES }} 2>&1 | grep -E "(LINK|UNLINK)" || echo "All files are properly linked"
+    @stow -t {{ BIN_TARGET }} -n -S bin 2>&1 | grep -E "(LINK|UNLINK)" || echo "bin/ -> {{ BIN_TARGET }} properly linked"
