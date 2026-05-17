@@ -48,6 +48,18 @@ function where() {
     which "$@" | xargs ls -l
 }
 
+function clean_pyc() {
+    CWD=$(pwd)
+    echo "Cleanup python cache under '$CWD'"
+
+    find . -name '*.pyc' -exec rm -f {} +
+    find . -name '*.pyo' -exec rm -f {} +
+    find . -name '*~' -exec rm -f {} +
+    find . -name '__pycache__' -exec rm -fr {} +
+    find . -name '.pytest_cache' -exec rm -rf {} +
+    find . -name '.mypy_cache' -exec rm -rf {} +
+}
+
 # cheatsheet update. See github.com/yairfine/cheatsheet
 function csu {
     # update cheatsheet script
