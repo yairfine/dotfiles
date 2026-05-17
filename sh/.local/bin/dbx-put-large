@@ -1,0 +1,75 @@
+#!/bin/sh
+# Upload a local file to Dropbox via the upload_session API.
+# Required for files >150 MiB (the /files/upload simple-upload cap).
+# Sends content_hash on finish for end-to-end server-side verification.
+set -e
+
+if [ $# -ne 2 ] || [ ! -f "$1" ]; then
+    echo "Usage: dbx-put-large <src_file> <dst_path>" >&2
+    exit 1
+fi
+
+src="$1"
+dst="$2"
+token=$(jq -r '.[""]["personal"]' ~/.config/dbxcli/auth.json)
+
+chunk_size=$((64 * 1024 * 1024))
+file_size=$(stat -f%z "$src")
+
+# POST to a Dropbox content endpoint with raw body on stdin and a JSON arg
+# header. Prints response body on success; prints body to stderr and returns
+# non-zero on HTTP error so the caller (and set -e) sees the real error_summary.
+dbx_post() {
+    _url=$1; _arg=$2
+    _body=$(mktemp)
+    _code=$(curl -sS -o "$_body" -w '%{http_code}' -X POST "$_url" \
+        -H "Authorization: Bearer $token" \
+        -H "Dropbox-API-Arg: $_arg" \
+        -H "Content-Type: application/octet-stream" \
+        --data-binary @-) || _code="curl-failed"
+    if [ "$_code" != "200" ]; then
+        echo "dbx-put-large: $_url returned $_code:" >&2
+        cat "$_body" >&2
+        echo >&2
+        rm -f "$_body"
+        return 1
+    fi
+    cat "$_body"
+    rm -f "$_body"
+}
+
+start_resp=$(dbx_post https://content.dropboxapi.com/2/files/upload_session/start \
+    '{"close":false}' < /dev/null)
+session_id=$(echo "$start_resp" | jq -r .session_id)
+
+if [ -z "$session_id" ] || [ "$session_id" = "null" ]; then
+    echo "dbx-put-large: failed to start upload session: $start_resp" >&2
+    exit 1
+fi
+
+offset=0
+while [ $((offset + chunk_size)) -lt "$file_size" ]; do
+    arg=$(jq -nca --arg sid "$session_id" --argjson off "$offset" \
+        '{close:false, cursor:{session_id:$sid, offset:$off}}')
+    tail -c "+$((offset + 1))" "$src" | head -c "$chunk_size" \
+      | dbx_post https://content.dropboxapi.com/2/files/upload_session/append_v2 "$arg" \
+      > /dev/null
+    offset=$((offset + chunk_size))
+done
+
+content_hash=$(dbx-content-hash "$src")
+arg=$(jq -nca \
+    --arg sid "$session_id" \
+    --argjson off "$offset" \
+    --arg path "$dst" \
+    '{cursor:{session_id:$sid, offset:$off},
+      commit:{path:$path, mode:"add", autorename:false, mute:false, strict_conflict:false}}')
+
+finish_resp=$(tail -c "+$((offset + 1))" "$src" \
+  | dbx_post https://content.dropboxapi.com/2/files/upload_session/finish "$arg")
+
+remote_hash=$(echo "$finish_resp" | jq -r .content_hash)
+if [ "$remote_hash" != "$content_hash" ]; then
+    echo "dbx-put-large: hash mismatch after upload of $dst (local=$content_hash, remote=$remote_hash)" >&2
+    exit 1
+fi
