@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # upload a directory full of files to dropbox, skipping already-uploaded files by content hash
-set -eu
+set -u
 
 if [ $# -ne 2 ]; then
     echo "Usage: $0 <src dir> <dst dir>"
