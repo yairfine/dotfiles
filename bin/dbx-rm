@@ -1,0 +1,23 @@
+#!/bin/sh
+# Delete a remote Dropbox path (file or folder; folder delete is recursive).
+set -e
+
+if [ $# -ne 1 ]; then
+    echo "Usage: dbx-rm <remote_path>" >&2
+    exit 1
+fi
+
+remote_path="$1"
+token=$(jq -r '.[""]["personal"]' ~/.config/dbxcli/auth.json)
+
+response=$(curl -s -X POST https://api.dropboxapi.com/2/files/delete_v2 \
+    -H "Authorization: Bearer $token" \
+    -H "Content-Type: application/json" \
+    -d "$(jq -n --arg p "$remote_path" '{path:$p}')")
+
+if echo "$response" | jq -e '.error' >/dev/null 2>&1; then
+    echo "Error: $(echo "$response" | jq -r '.error_summary')" >&2
+    exit 1
+fi
+
+echo "$response" | jq -r '.metadata.path_display'

@@ -1,0 +1,108 @@
+#!/usr/bin/env bash
+# Delete many remote Dropbox paths in batches via /files/delete_batch.
+# Reads one path per line on stdin. Chunks into batches of <=1000, polls
+# delete_batch/check until each batch reports complete, emits a per-entry
+# TSV result.
+#
+# Output (TSV, one per input line, in input order):
+#   <status>\t<path>\t<error_or_->
+# where status is "success" or "failure".
+# Exit 0 if every delete succeeded; non-zero if any failed.
+set -eu
+
+usage() {
+    cat <<EOF >&2
+Usage: dbx-rm-batch < paths.txt
+  Each line on stdin: a remote Dropbox path to delete.
+  Output (TSV): <status>\t<path>\t<error_or_->
+EOF
+    exit "${1:-1}"
+}
+
+case "${1:-}" in
+    -h|--help) usage 0 ;;
+    "") ;;
+    *) usage 1 ;;
+esac
+
+token=$(jq -r '.[""]["personal"]' ~/.config/dbxcli/auth.json)
+api="https://api.dropboxapi.com/2"
+
+work=$(mktemp -d)
+trap 'rm -rf "$work"' EXIT
+
+cat > "$work/input"
+total=$(wc -l < "$work/input" | tr -d ' ')
+[ "$total" -eq 0 ] && exit 0
+
+split -l 1000 "$work/input" "$work/batch."
+
+dbx_post() {
+    curl -sS -X POST "$api/$1" \
+        -H "Authorization: Bearer $token" \
+        -H "Content-Type: application/json" \
+        --data "$2"
+}
+
+: > "$work/output"
+
+for batch in "$work"/batch.*; do
+    body=$(jq -R '{path: .}' "$batch" | jq -s '{entries: .}')
+    resp=$(dbx_post "files/delete_batch" "$body")
+
+    if echo "$resp" | jq -e '.error' >/dev/null 2>&1; then
+        echo "dbx-rm-batch: $(echo "$resp" | jq -r '.error_summary')" >&2
+        exit 1
+    fi
+
+    tag=$(echo "$resp" | jq -r '.[".tag"]')
+    if [ "$tag" = "async_job_id" ]; then
+        job=$(echo "$resp" | jq -r '.async_job_id')
+        delay=1
+        while true; do
+            sleep "$delay"
+            resp=$(dbx_post "files/delete_batch/check" \
+                "$(jq -n --arg j "$job" '{async_job_id: $j}')")
+            if echo "$resp" | jq -e '.error' >/dev/null 2>&1; then
+                echo "dbx-rm-batch: poll error: $(echo "$resp" | jq -r '.error_summary')" >&2
+                exit 1
+            fi
+            ctag=$(echo "$resp" | jq -r '.[".tag"]')
+            [ "$ctag" = "complete" ] && break
+            if [ "$ctag" != "in_progress" ]; then
+                echo "dbx-rm-batch: unexpected job state: $ctag" >&2
+                echo "$resp" >&2
+                exit 1
+            fi
+            [ "$delay" -lt 5 ] && delay=$((delay * 2))
+            [ "$delay" -gt 5 ] && delay=5
+        done
+    elif [ "$tag" != "complete" ]; then
+        echo "dbx-rm-batch: unexpected response tag: $tag" >&2
+        echo "$resp" >&2
+        exit 1
+    fi
+
+    ins=$(jq -R . "$batch" | jq -s '.')
+    outs=$(echo "$resp" | jq -c '.entries')
+    jq -rn --argjson ins "$ins" --argjson outs "$outs" '
+        [range(0; $ins|length)] | map(
+            $ins[.] as $p | $outs[.] as $o |
+            $o[".tag"] as $t |
+            [
+                $t,
+                $p,
+                (if $t == "success" then "-"
+                 else ($o.failure[".tag"] // ($o.failure | tostring))
+                 end)
+            ]
+        ) | .[] | @tsv' >> "$work/output"
+done
+
+cat "$work/output"
+
+if grep -q '^failure' "$work/output"; then
+    fcount=$(grep -c '^failure' "$work/output" || true)
+    echo "dbx-rm-batch: $fcount of $total deletes failed" >&2
+    exit 1
+fi

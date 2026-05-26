@@ -1,0 +1,231 @@
+#!/usr/bin/env bash
+# dbx-dedup — find content-duplicate files in a remote Dropbox directory and
+# delete redundant copies. Groups by content_hash; per group, picks one to keep.
+#
+# Decision per group:
+#   1. If --discard-pattern is set AND at least one path matches AND at least
+#      one path doesn't match: auto-keep the non-matching, delete the matching.
+#   2. Else: prompt the user which path to keep.
+# After all groups are resolved, prints a single plan summary and a y/N gate.
+set -euo pipefail
+
+usage() {
+    cat <<EOF >&2
+Usage: dbx-dedup [OPTIONS] <remote_dir>
+
+Find content-duplicate files under <remote_dir> (recursive) and remove
+redundant copies. One survivor per content_hash.
+
+Options:
+  --discard-pattern PAT   bash-glob matched against each file's basename;
+                          when at least one file in a group matches and at
+                          least one doesn't, the matching files are auto-marked
+                          for deletion. Repeatable.
+  --dry-run               Print plan; perform no deletions.
+  --force                 Skip the final y/N confirmation.
+  -h, --help              Show this help.
+EOF
+    exit "${1:-1}"
+}
+
+discard_patterns=()
+dry_run=0
+force=0
+target=""
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --discard-pattern=*) discard_patterns+=("${1#*=}") ;;
+        --discard-pattern) shift; discard_patterns+=("${1:-}") ;;
+        --dry-run) dry_run=1 ;;
+        --force) force=1 ;;
+        -h|--help) usage 0 ;;
+        --) shift; while [[ $# -gt 0 ]]; do
+                [[ -z "$target" ]] && target="$1" || { echo "Unexpected: $1" >&2; usage 1; }
+                shift
+            done; break ;;
+        -*) echo "Unknown option: $1" >&2; usage 1 ;;
+        *)
+            [[ -n "$target" ]] && { echo "Multiple paths: $target / $1" >&2; usage 1; }
+            target="$1"
+            ;;
+    esac
+    shift
+done
+
+[[ -n "$target" ]] || usage 1
+
+work=$(mktemp -d -t dbx-dedup.XXXXXX)
+trap 'rm -rf "$work"' EXIT
+
+# ─── enumerate files, sort by hash ───────────────────────────────────────────
+echo "Listing $target ..."
+dbx-ls --recursive "$target" \
+    | awk -F '\t' '$1=="file" && $3 != "-" {print $2"\t"$3}' \
+    | sort -t $'\t' -k2,2 > "$work/files.tsv"
+
+total=$(wc -l < "$work/files.tsv" | tr -d ' ')
+echo "  $total files"
+
+if [[ "$total" -eq 0 ]]; then exit 0; fi
+
+# ─── partition into duplicate groups ─────────────────────────────────────────
+mkdir -p "$work/groups"
+gn=0
+prev=""
+group_file=""
+while IFS=$'\t' read -r path hash; do
+    if [[ "$hash" != "$prev" ]]; then
+        if [[ -n "$group_file" ]]; then
+            count=$(wc -l < "$group_file" | tr -d ' ')
+            [[ "$count" -lt 2 ]] && rm -f "$group_file"
+        fi
+        gn=$((gn + 1))
+        group_file="$work/groups/$gn.tsv"
+        : > "$group_file"
+        prev="$hash"
+    fi
+    echo "$path" >> "$group_file"
+done < "$work/files.tsv"
+if [[ -n "$group_file" ]]; then
+    count=$(wc -l < "$group_file" | tr -d ' ')
+    [[ "$count" -lt 2 ]] && rm -f "$group_file"
+fi
+
+groups=("$work"/groups/*.tsv)
+if [[ ! -e "${groups[0]}" ]]; then
+    echo "No content duplicates found."
+    exit 0
+fi
+ngroups=${#groups[@]}
+echo "  $ngroups duplicate groups"
+echo ""
+
+# ─── decide per group ────────────────────────────────────────────────────────
+delete_plan="$work/delete.txt"
+keep_plan="$work/keep.txt"
+: > "$delete_plan"; : > "$keep_plan"
+
+auto=0
+prompted=0
+skipped=0
+
+matches_any_pattern() {
+    local base="$1" pat
+    for pat in "${discard_patterns[@]:-}"; do
+        [[ -z "$pat" ]] && continue
+        # shellcheck disable=SC2053
+        [[ "$base" == $pat ]] && return 0
+    done
+    return 1
+}
+
+for gf in "${groups[@]}"; do
+    paths=()
+    while IFS= read -r p; do paths+=("$p"); done < "$gf"
+
+    matching=()
+    nonmatching=()
+    for p in "${paths[@]}"; do
+        if matches_any_pattern "$(basename "$p")"; then
+            matching+=("$p")
+        else
+            nonmatching+=("$p")
+        fi
+    done
+
+    if [[ ${#matching[@]} -gt 0 && ${#nonmatching[@]} -gt 0 ]]; then
+        for p in "${nonmatching[@]}"; do echo "$p" >> "$keep_plan"; done
+        for p in "${matching[@]}";    do echo "$p" >> "$delete_plan"; done
+        auto=$((auto + 1))
+        continue
+    fi
+
+    echo "Duplicate group (${#paths[@]} files):"
+    for i in "${!paths[@]}"; do printf "  %d) %s\n" $((i+1)) "${paths[$i]}"; done
+    while true; do
+        read -r -p "Keep which? [1-${#paths[@]} / s=skip / a=abort]: " choice
+        case "$choice" in
+            a|A) echo "Aborted." >&2; exit 1 ;;
+            s|S)
+                for p in "${paths[@]}"; do echo "$p" >> "$keep_plan"; done
+                skipped=$((skipped + 1))
+                break
+                ;;
+            *)
+                if [[ "$choice" =~ ^[0-9]+$ ]] && (( choice >= 1 && choice <= ${#paths[@]} )); then
+                    keep_idx=$((choice - 1))
+                    for i in "${!paths[@]}"; do
+                        if [[ "$i" -eq "$keep_idx" ]]; then
+                            echo "${paths[$i]}" >> "$keep_plan"
+                        else
+                            echo "${paths[$i]}" >> "$delete_plan"
+                        fi
+                    done
+                    prompted=$((prompted + 1))
+                    break
+                fi
+                echo "  Invalid; try again." >&2
+                ;;
+        esac
+    done
+    echo ""
+done
+
+# ─── plan summary ────────────────────────────────────────────────────────────
+del_count=$(wc -l < "$delete_plan" | tr -d ' ')
+keep_count=$(wc -l < "$keep_plan" | tr -d ' ')
+
+echo "Plan:"
+echo "  groups:           $ngroups (auto: $auto, prompted: $prompted, skipped: $skipped)"
+echo "  files to keep:    $keep_count"
+echo "  files to delete:  $del_count"
+
+if [[ "$del_count" -eq 0 ]]; then
+    echo "Nothing to delete."
+    exit 0
+fi
+
+if [[ "$dry_run" -eq 1 ]]; then
+    echo ""
+    echo "[dry-run] would delete:"
+    sed 's/^/  /' "$delete_plan"
+    exit 0
+fi
+
+if [[ "$force" -ne 1 ]]; then
+    echo ""
+    echo "Sample of deletions:"
+    head -n 10 "$delete_plan" | sed 's/^/  /'
+    (( del_count > 10 )) && echo "  ... and $((del_count - 10)) more"
+    echo ""
+    read -r -p "Proceed with $del_count deletions? [y/N]: " confirm
+    case "$confirm" in
+        y|Y|yes|YES) ;;
+        *) echo "Aborted."; exit 0 ;;
+    esac
+fi
+
+# ─── execute ─────────────────────────────────────────────────────────────────
+echo ""
+echo "Deleting via dbx-rm-batch..."
+results="$work/results.tsv"
+rm_status=0
+dbx-rm-batch < "$delete_plan" > "$results" || rm_status=$?
+
+fail=$(grep -c '^failure' "$results" 2>/dev/null || true)
+ok=$(grep -c '^success' "$results" 2>/dev/null || true)
+echo "  $ok deleted, $fail failed"
+
+if [[ "$fail" -gt 0 ]]; then
+    echo ""
+    echo "Failures:" >&2
+    grep '^failure' "$results" >&2
+    exit 1
+fi
+
+if [[ "$rm_status" -ne 0 ]]; then
+    exit "$rm_status"
+fi
+
+echo "Done. Deleted $del_count files."

@@ -1,0 +1,109 @@
+#!/usr/bin/env bash
+# Move many remote Dropbox paths in batches via /files/move_batch_v2.
+# Reads JSONL on stdin: {"from_path": "...", "to_path": "..."}
+# Chunks input into batches of <=1000 (Dropbox limit), polls move_batch/check_v2
+# until each batch reports complete, then emits a per-entry result.
+#
+# Output (TSV, one per input line, in input order):
+#   <status>\t<from>\t<to>\t<error_or_->
+# where status is "success" or "failure".
+# Exit 0 if every move succeeded; non-zero (and a stderr summary) if any failed.
+set -eu
+
+usage() {
+    cat <<EOF >&2
+Usage: dbx-mv-batch < entries.jsonl
+  Each line on stdin: {"from_path": "/src/a", "to_path": "/dst/a"}
+  Output (TSV): <status>\t<from>\t<to>\t<error_or_->
+EOF
+    exit "${1:-1}"
+}
+
+case "${1:-}" in
+    -h|--help) usage 0 ;;
+    "") ;;
+    *) usage 1 ;;
+esac
+
+token=$(jq -r '.[""]["personal"]' ~/.config/dbxcli/auth.json)
+api="https://api.dropboxapi.com/2"
+
+work=$(mktemp -d)
+trap 'rm -rf "$work"' EXIT
+
+cat > "$work/input"
+total=$(wc -l < "$work/input" | tr -d ' ')
+[ "$total" -eq 0 ] && exit 0
+
+split -l 1000 "$work/input" "$work/batch."
+
+dbx_post() {
+    curl -sS -X POST "$api/$1" \
+        -H "Authorization: Bearer $token" \
+        -H "Content-Type: application/json" \
+        --data "$2"
+}
+
+: > "$work/output"
+
+for batch in "$work"/batch.*; do
+    body=$(jq -s '{entries: ., autorename: false, allow_ownership_transfer: false}' "$batch")
+    resp=$(dbx_post "files/move_batch_v2" "$body")
+
+    if echo "$resp" | jq -e '.error' >/dev/null 2>&1; then
+        echo "dbx-mv-batch: $(echo "$resp" | jq -r '.error_summary')" >&2
+        exit 1
+    fi
+
+    tag=$(echo "$resp" | jq -r '.[".tag"]')
+    if [ "$tag" = "async_job_id" ]; then
+        job=$(echo "$resp" | jq -r '.async_job_id')
+        delay=1
+        while true; do
+            sleep "$delay"
+            resp=$(dbx_post "files/move_batch/check_v2" \
+                "$(jq -n --arg j "$job" '{async_job_id: $j}')")
+            if echo "$resp" | jq -e '.error' >/dev/null 2>&1; then
+                echo "dbx-mv-batch: poll error: $(echo "$resp" | jq -r '.error_summary')" >&2
+                exit 1
+            fi
+            ctag=$(echo "$resp" | jq -r '.[".tag"]')
+            [ "$ctag" = "complete" ] && break
+            if [ "$ctag" != "in_progress" ]; then
+                echo "dbx-mv-batch: unexpected job state: $ctag" >&2
+                echo "$resp" >&2
+                exit 1
+            fi
+            [ "$delay" -lt 5 ] && delay=$((delay * 2))
+            [ "$delay" -gt 5 ] && delay=5
+        done
+    elif [ "$tag" != "complete" ]; then
+        echo "dbx-mv-batch: unexpected response tag: $tag" >&2
+        echo "$resp" >&2
+        exit 1
+    fi
+
+    ins=$(jq -s '.' "$batch")
+    outs=$(echo "$resp" | jq -c '.entries')
+    jq -rn --argjson ins "$ins" --argjson outs "$outs" '
+        [range(0; $ins|length)] | map(
+            $ins[.] as $i | $outs[.] as $o |
+            $o[".tag"] as $t |
+            [
+                $t,
+                $i.from_path,
+                $i.to_path,
+                (if $t == "success" then "-"
+                 else ($o.failure[".tag"] // ($o.failure | tostring))
+                 end)
+            ]
+        ) | .[] | @tsv' >> "$work/output"
+done
+
+cat "$work/output"
+
+if grep -q '^failure' "$work/output"; then
+    fcount=$(grep -c '^failure' "$work/output" || true)
+    echo "dbx-mv-batch: $fcount of $total moves failed" >&2
+    exit 1
+fi

@@ -1,0 +1,32 @@
+#!/bin/sh
+# Create a remote Dropbox directory. Idempotent: existing dir is treated as success.
+set -e
+
+if [ $# -ne 1 ]; then
+    echo "Usage: dbx-mkdir <remote_dir>" >&2
+    exit 1
+fi
+
+remote_dir="$1"
+token=$(jq -r '.[""]["personal"]' ~/.config/dbxcli/auth.json)
+
+response=$(curl -s -X POST https://api.dropboxapi.com/2/files/create_folder_v2 \
+    -H "Authorization: Bearer $token" \
+    -H "Content-Type: application/json" \
+    -d "$(jq -n --arg p "$remote_dir" '{path:$p, autorename:false}')")
+
+if echo "$response" | jq -e '.error' >/dev/null 2>&1; then
+    # path/conflict/folder = already exists, which is success for our purposes.
+    tag=$(echo "$response" | jq -r '.error.path[".tag"] // empty')
+    if [ "$tag" = "conflict" ]; then
+        inner=$(echo "$response" | jq -r '.error.path.conflict[".tag"] // empty')
+        if [ "$inner" = "folder" ]; then
+            echo "$remote_dir"
+            exit 0
+        fi
+    fi
+    echo "Error: $(echo "$response" | jq -r '.error_summary')" >&2
+    exit 1
+fi
+
+echo "$response" | jq -r '.metadata.path_display'

@@ -1,0 +1,61 @@
+#!/bin/sh
+# List entries in a remote Dropbox directory.
+# Output (TSV, one per line): <.tag>\t<path_display>\t<content_hash_or_->
+# .tag is "file", "folder", or "deleted". content_hash is "-" for non-files.
+set -e
+
+usage() {
+    echo "Usage: dbx-ls <remote_dir> [--recursive]" >&2
+    exit "${1:-1}"
+}
+
+recursive=false
+remote_dir=
+while [ $# -gt 0 ]; do
+    case "$1" in
+        --recursive|-r) recursive=true ;;
+        -h|--help) usage 0 ;;
+        -*) echo "Unknown option: $1" >&2; usage 1 ;;
+        *)
+            if [ -n "$remote_dir" ]; then
+                usage 1
+            fi
+            remote_dir=$1
+            ;;
+    esac
+    shift
+done
+
+[ -n "$remote_dir" ] || usage 1
+
+token=$(jq -r '.[""]["personal"]' ~/.config/dbxcli/auth.json)
+
+emit() {
+    echo "$1" | jq -r '.entries[] | [.[".tag"], .path_display, (.content_hash // "-")] | @tsv'
+}
+
+response=$(curl -s -X POST https://api.dropboxapi.com/2/files/list_folder \
+    -H "Authorization: Bearer $token" \
+    -H "Content-Type: application/json" \
+    -d "$(jq -n --arg p "$remote_dir" --argjson r "$recursive" \
+        '{path:$p, recursive:$r}')")
+
+if echo "$response" | jq -e '.error' >/dev/null 2>&1; then
+    echo "Error: $(echo "$response" | jq -r '.error_summary')" >&2
+    exit 1
+fi
+
+emit "$response"
+
+while [ "$(echo "$response" | jq -r '.has_more')" = "true" ]; do
+    cursor=$(echo "$response" | jq -r '.cursor')
+    response=$(curl -s -X POST https://api.dropboxapi.com/2/files/list_folder/continue \
+        -H "Authorization: Bearer $token" \
+        -H "Content-Type: application/json" \
+        -d "$(jq -n --arg c "$cursor" '{cursor:$c}')")
+    if echo "$response" | jq -e '.error' >/dev/null 2>&1; then
+        echo "Error: $(echo "$response" | jq -r '.error_summary')" >&2
+        exit 1
+    fi
+    emit "$response"
+done
