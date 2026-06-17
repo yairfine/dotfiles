@@ -3,9 +3,6 @@
 export REPOS_PATH="$HOME/repos"
 mkdir -p $REPOS_PATH &>/dev/null
 
-# path to the currently selected xcode
-export XCODE_PATH=$(xcode-select -p)
-
 # adding paths to PATH
 export PATH=$PATH:$REPOS_PATH/scripts
 export PATH=$PATH:$HOME/scripts
