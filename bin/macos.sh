@@ -369,11 +369,14 @@ defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
 # Dock, Dashboard, and hot corners                                            #
 ###############################################################################
 
+# Move dock to left
+defaults write com.apple.dock orientation -string "left"
+
 # Enable highlight hover effect for the grid view of a stack (Dock)
-# defaults write com.apple.dock mouse-over-hilite-stack -bool true
+defaults write com.apple.dock mouse-over-hilite-stack -bool true
 
 # Set the icon size of Dock items to 36 pixels
-# defaults write com.apple.dock tilesize -int 36
+defaults write com.apple.dock tilesize -int 40
 
 # Change minimize/maximize window effect
 # defaults write com.apple.dock mineffect -string "scale"
