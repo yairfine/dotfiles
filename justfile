@@ -11,7 +11,7 @@ default:
     @just --list
 
 # Initial setup - install dotfiles and configure git
-setup: check restow git-conf
+setup: check restow git-conf install-git-scripts
     @echo "✅ Dotfiles setup complete!"
     @echo "Now run: source ~/.zshrc"
 
