@@ -67,7 +67,7 @@ alias ..="cd .."
 alias less="less -i"
 
 alias ls="ls -G -b"
-# alias ll="ls -lah"
+alias ll="ls -lah"
 alias lat="ls -latr"
 alias latr="ls -lat"
 alias llnl="ll | nl"
