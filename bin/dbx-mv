@@ -1,0 +1,25 @@
+#!/bin/sh
+# Move (or rename) a single remote Dropbox path (file or folder).
+set -e
+
+if [ $# -ne 2 ]; then
+    echo "Usage: dbx-mv <from_path> <to_path>" >&2
+    exit 1
+fi
+
+from_path="$1"
+to_path="$2"
+token=$(jq -r '.[""]["personal"]' ~/.config/dbxcli/auth.json)
+
+response=$(curl -s -X POST https://api.dropboxapi.com/2/files/move_v2 \
+    -H "Authorization: Bearer $token" \
+    -H "Content-Type: application/json" \
+    -d "$(jq -n --arg f "$from_path" --arg t "$to_path" \
+        '{from_path:$f, to_path:$t, autorename:false, allow_ownership_transfer:false}')")
+
+if echo "$response" | jq -e '.error' >/dev/null 2>&1; then
+    echo "Error: $(echo "$response" | jq -r '.error_summary')" >&2
+    exit 1
+fi
+
+echo "$response" | jq -r '.metadata.path_display'

@@ -1,0 +1,49 @@
+#!/bin/sh
+# Create (or fetch, if one already exists) a read-only Dropbox shared link
+# for a remote path. Idempotent: an existing link is returned as success.
+set -e
+
+if [ $# -ne 1 ]; then
+    echo "Usage: dbx-share-link <remote_path>" >&2
+    exit 1
+fi
+
+remote_path="$1"
+token=$(jq -r '.[""]["personal"]' ~/.config/dbxcli/auth.json)
+
+response=$(curl -s -X POST https://api.dropboxapi.com/2/sharing/create_shared_link_with_settings \
+    -H "Authorization: Bearer $token" \
+    -H "Content-Type: application/json" \
+    -d "$(jq -n --arg p "$remote_path" \
+        '{path:$p, settings:{requested_visibility:"public", audience:"public", access:"viewer"}}')")
+
+if echo "$response" | jq -e '.error' >/dev/null 2>&1; then
+    tag=$(echo "$response" | jq -r '.error[".tag"] // empty')
+    if [ "$tag" = "shared_link_already_exists" ]; then
+        existing=$(echo "$response" | jq -r '.error.shared_link_already_exists.metadata.url // empty')
+        if [ -n "$existing" ]; then
+            echo "$existing"
+            exit 0
+        fi
+        # Metadata not inlined; look it up explicitly.
+        response=$(curl -s -X POST https://api.dropboxapi.com/2/sharing/list_shared_links \
+            -H "Authorization: Bearer $token" \
+            -H "Content-Type: application/json" \
+            -d "$(jq -n --arg p "$remote_path" '{path:$p, direct_only:true}')")
+        if echo "$response" | jq -e '.error' >/dev/null 2>&1; then
+            echo "Error: $(echo "$response" | jq -r '.error_summary')" >&2
+            exit 1
+        fi
+        url=$(echo "$response" | jq -r '.links[0].url // empty')
+        if [ -z "$url" ]; then
+            echo "Error: shared link reported as existing but none found for $remote_path" >&2
+            exit 1
+        fi
+        echo "$url"
+        exit 0
+    fi
+    echo "Error: $(echo "$response" | jq -r '.error_summary')" >&2
+    exit 1
+fi
+
+echo "$response" | jq -r '.url'
