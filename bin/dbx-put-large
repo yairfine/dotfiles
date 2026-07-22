@@ -11,7 +11,7 @@ fi
 
 src="$1"
 dst="$2"
-token=$(jq -r '.[""]["personal"]' ~/.config/dbxcli/auth.json)
+token=$(jq -r '.[""].personal | if type=="object" then .access_token else . end' ~/.config/dbxcli/auth.json)
 api="https://content.dropboxapi.com/2"
 
 chunk_size=$((16 * 1024 * 1024))

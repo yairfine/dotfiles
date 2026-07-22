@@ -27,7 +27,11 @@ echo ""
 
 echo "Fetching remote hashes..."
 hash_file=$(mktemp)
-dbx-remote-dir-hashes "$dst_dir" > "$hash_file"
+if ! dbx-remote-dir-hashes "$dst_dir" > "$hash_file"; then
+    echo "Error: could not fetch remote hashes; aborting to avoid blind re-uploads" >&2
+    rm -f "$hash_file"
+    exit 1
+fi
 echo "Found $(wc -l < "$hash_file" | tr -d ' ') files on remote"
 echo ""
 

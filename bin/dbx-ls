@@ -28,7 +28,7 @@ done
 
 [ -n "$remote_dir" ] || usage 1
 
-token=$(jq -r '.[""]["personal"]' ~/.config/dbxcli/auth.json)
+token=$(jq -r '.[""].personal | if type=="object" then .access_token else . end' ~/.config/dbxcli/auth.json)
 
 emit() {
     echo "$1" | jq -r '.entries[] | [.[".tag"], .path_display, (.content_hash // "-")] | @tsv'

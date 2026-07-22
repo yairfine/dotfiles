@@ -8,7 +8,7 @@ if [ $# -ne 1 ]; then
 fi
 
 remote_path="$1"
-token=$(jq -r '.[""]["personal"]' ~/.config/dbxcli/auth.json)
+token=$(jq -r '.[""].personal | if type=="object" then .access_token else . end' ~/.config/dbxcli/auth.json)
 
 response=$(curl -s -X POST https://api.dropboxapi.com/2/files/delete_v2 \
     -H "Authorization: Bearer $token" \

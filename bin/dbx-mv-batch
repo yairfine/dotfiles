@@ -25,7 +25,7 @@ case "${1:-}" in
     *) usage 1 ;;
 esac
 
-token=$(jq -r '.[""]["personal"]' ~/.config/dbxcli/auth.json)
+token=$(jq -r '.[""].personal | if type=="object" then .access_token else . end' ~/.config/dbxcli/auth.json)
 api="https://api.dropboxapi.com/2"
 
 work=$(mktemp -d)

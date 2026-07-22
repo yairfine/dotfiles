@@ -9,17 +9,45 @@ if [ $# -ne 1 ]; then
 fi
 
 remote_dir="$1"
-token=$(jq -r '.[""]["personal"]' ~/.config/dbxcli/auth.json)
+auth="$HOME/.config/dbxcli/auth.json"
+
+# dbxcli >=3.7.0 stores an OAuth object under .[""].personal
+# (access_token/refresh_token/expiry). Older versions stored the token string
+# directly. Handle both.
+token=$(jq -r '
+    .[""].personal as $p
+    | if   ($p | type) == "object" then ($p.access_token // empty)
+      elif ($p | type) == "string" then $p
+      else empty end
+' "$auth")
+if [ -z "$token" ] || [ "$token" = "null" ]; then
+    echo "Error: no Dropbox access token in $auth (run 'dbxcli login')" >&2
+    exit 1
+fi
+
+# Fail loudly on unreachable API / bad auth rather than emitting zero hashes:
+# a silent empty result makes callers re-upload everything on every retry.
+check_response() {
+    if [ -z "$1" ]; then
+        echo "Error: empty response from Dropbox API (check auth/network)" >&2
+        exit 1
+    fi
+    if echo "$1" | jq -e '.error' >/dev/null 2>&1; then
+        summary=$(echo "$1" | jq -r '.error_summary')
+        case "$summary" in
+            # Remote dir not created yet == zero files; not an error.
+            path/not_found*) exit 0 ;;
+            *) echo "Error: $summary" >&2; exit 1 ;;
+        esac
+    fi
+}
 
 response=$(curl -s -X POST https://api.dropboxapi.com/2/files/list_folder \
     -H "Authorization: Bearer $token" \
     -H "Content-Type: application/json" \
     -d "{\"path\": \"$remote_dir\", \"recursive\": true}")
 
-if echo "$response" | jq -e '.error' >/dev/null 2>&1; then
-    echo "Error: $(echo "$response" | jq -r '.error_summary')" >&2
-    exit 1
-fi
+check_response "$response"
 
 echo "$response" | jq -r '.entries[] | select(.content_hash) | .content_hash'
 
@@ -29,5 +57,6 @@ while [ "$(echo "$response" | jq -r '.has_more')" = "true" ]; do
         -H "Authorization: Bearer $token" \
         -H "Content-Type: application/json" \
         -d "{\"cursor\": \"$cursor\"}")
+    check_response "$response"
     echo "$response" | jq -r '.entries[] | select(.content_hash) | .content_hash'
 done
