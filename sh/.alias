@@ -76,6 +76,11 @@ alias df="df -kH"
 
 alias top="top -o cpu"
 
+# no sleep with caffeinate - prefix to any other command
+alias ns="caffeinate -i -u -d -t 36000"
+alias ns1="caffeinate -i -u -d -t 3600"
+alias ns2="caffeinate -i -u -d -t 7200"
+
 # create files, usage: dd*f <bytes> <out file>
 alias ddr="ddb /dev/urandom"
 alias ddz="ddb /dev/zero"
