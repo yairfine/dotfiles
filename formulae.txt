@@ -21,3 +21,4 @@ ccache
 starship
 bat
 fclones
+rclone
