@@ -1,0 +1,24 @@
+#!/bin/sh
+# dbx — rclone with the flags this toolchain always wants.
+#
+# Every Dropbox operation goes through rclone; this wrapper only supplies
+# defaults so call sites stay readable. Paths are ordinary rclone paths
+# ("dropbox:Photos/x"); a plain path is a local dir, which is how the fuji-*
+# scripts are tested without touching Dropbox.
+#
+# --checksum is not a preference here, it is required: Dropbox cannot set the
+# modification time of an existing file (the API has no such call, so rclone
+# would delete and re-upload just to fix a timestamp). Comparing by content
+# hash instead makes re-runs cheap and idempotent.
+#
+# Flags given on the command line still override anything set here.
+set -e
+
+export RCLONE_CHECKSUM=true \
+       RCLONE_TRANSFERS=8 \
+       RCLONE_CHECKERS=16 \
+       RCLONE_RETRIES=5 \
+       RCLONE_LOW_LEVEL_RETRIES=20 \
+       RCLONE_DROPBOX_BATCH_MODE=sync
+
+exec rclone "$@"
