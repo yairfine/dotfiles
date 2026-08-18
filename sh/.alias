@@ -18,6 +18,9 @@ alias sha256="shasum -a 256"
 # edit text files
 alias edit="open -a 'TextMate'"
 
+# xcode
+alias xo="xed *.xcodeproj"
+
 # open zsh config file for edits
 alias zshc="code ~/.zshrc"
 
