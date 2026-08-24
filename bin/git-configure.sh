@@ -129,3 +129,4 @@ git config --global alias.weekly '! f() { git log --all --reflog --notes --autho
 git config --global alias.yearly '! f() { git log --all --reflog --notes --author="$(git config user.name || echo "NotExists")" --since-as-filter="1 year ago" --format="%C(yellow)%h%C(reset) %s %C(green)(%ch)%C(reset)"; }; f'
 git config --global alias.last-week '! f() { git log --all --reflog --notes --author="$(git config user.name || echo "NotExists")" --since-as-filter="2 weeks ago" --until="1 week ago" --format="%C(yellow)%h%C(reset) %s %C(green)(%ch)%C(reset)"; }; f'
 git config --global alias.repo-name '! f() { basename "$(git rev-parse --show-toplevel)"; }; f'
+git config --global alias.me "! f() { { git log --format=%H --author=\"$(git config user.name)\" \$@ ; git log --format=%H --grep=\"yairfine\" \$@ ; } | git log --no-walk --stdin ; }; f"
