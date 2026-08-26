@@ -15,6 +15,11 @@ format = "via [$env_value]($style) "
 variable = "DEVICE"
 format = "via [$env_value]($style) "
 
+# Show worktree environment variable
+[env_var.ISPWT]
+variable = "ISPWT"
+format = "via [$env_value]($style) "
+
 [git_branch]
 truncation_length = 80
 
