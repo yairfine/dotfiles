@@ -62,7 +62,12 @@ alias repos="cd $REPOS_PATH"
 ## SSH
 function sshag {
     ssh-add -l &>/dev/null
-    [[ $? -eq 2 ]] && eval "$(ssh-agent -s)"
+    if [[ $? -eq 2 ]]; then
+        local sock=$(lsof -a -c ssh-agent -U -Fn 2>/dev/null | sed -n 's|^n\(/.*/com\.apple\.launchd\.[^/]*/Listeners\)$|\1|p' | head -1)
+        [[ -S $sock ]] && export SSH_AUTH_SOCK=$sock
+        ssh-add -l &>/dev/null
+        [[ $? -eq 2 ]] && eval "$(ssh-agent -s)"
+    fi
     ssha
 }
 
