@@ -97,3 +97,15 @@ status: check
     @echo "\n=== Stow Status ==="
     @stow -t {{ HOME_TARGET }} -n -S {{ STOW_PACKAGES }} 2>&1 | grep -E "(LINK|UNLINK)" || echo "All files are properly linked"
     @stow -t {{ BIN_TARGET }} -n -S bin 2>&1 | grep -E "(LINK|UNLINK)" || echo "bin/ -> {{ BIN_TARGET }} properly linked"
+
+# Load the launch agents (run from a terminal in the login session)
+load-agents:
+    @for p in macos/Library/LaunchAgents/*.plist; do \
+        label=$(basename $p .plist); \
+        echo "Loading $label..."; \
+        launchctl bootout gui/$(id -u)/$label 2>/dev/null; \
+        launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/$label.plist \
+            && launchctl print gui/$(id -u)/$label | grep -E "^[[:space:]]+(path|state|last exit code) =" \
+            && echo "✅ $label loaded" \
+            || echo "❌ $label failed to load"; \
+    done
