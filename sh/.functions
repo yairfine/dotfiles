@@ -245,3 +245,16 @@ codel() {
 
     code --goto "${filename}${line_col:+:$line_col}"
 }
+
+# keep the computer awake: tap ctrl and nudge the mouse every 30 secs, for 10 hours
+function keepawake() {
+    osascript -l JavaScript -e '
+ObjC.import("CoreGraphics");
+for (var i = 0; i < 10 * 3600 / 30; i++) {
+  var p = $.CGEventGetLocation($.CGEventCreate(null));
+  var r = () => Math.random() * 20 - 10;
+  $.CGEventPost($.kCGHIDEventTap, $.CGEventCreateMouseEvent(null, $.kCGEventMouseMoved, {x: p.x + r(), y: p.y + r()}, 0));
+  [true, false].forEach(d => $.CGEventPost($.kCGHIDEventTap, $.CGEventCreateKeyboardEvent(null, 59, d)));
+  delay(30);
+}'
+}
