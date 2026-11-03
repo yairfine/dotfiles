@@ -12,6 +12,9 @@ alias pull-all="fd -t d -d 1 . \$REPOS_PATH -x git -C {} pull-all --fetch"
 alias weekly="fd -t d -d 1 . \$REPOS_PATH -x bash -c 'output=\$(git -C \"{}\" -c color.ui=always weekly 2>/dev/null); if [[ -n \"\$output\" ]]; then git -C \"{}\" -c color.ui=always repo-name; echo \"\$output\"; echo; fi' \;"
 alias yearly="fd -t d -d 1 . \$REPOS_PATH -x bash -c 'output=\$(git -C \"{}\" -c color.ui=always yearly 2>/dev/null); if [[ -n \"\$output\" ]]; then git -C \"{}\" -c color.ui=always repo-name; echo \"\$output\"; echo; fi' \;"
 
+# find Claude Code sessions that contain a string, newest first
+alias ccf="rg -l -F --sortr modified --glob '*.jsonl' ~/.claude/projects -e"
+
 # SHA256 check-sum
 alias sha256="shasum -a 256"
 
