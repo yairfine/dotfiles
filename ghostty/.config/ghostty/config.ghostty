@@ -1,0 +1,4 @@
+link-previews = false
+tab-inherit-working-directory = false
+window-inherit-working-directory = false
+shell-integration-features = ssh-env,ssh-terminfo

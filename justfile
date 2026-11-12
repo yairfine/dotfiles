@@ -2,7 +2,7 @@
 # Run `just --list` to see all available commands
 # Stow packages to manage
 
-STOW_PACKAGES := "sh bash zsh clang-format macos ripgrep starship lldb"
+STOW_PACKAGES := "sh bash zsh clang-format macos ripgrep starship lldb ghostty"
 HOME_TARGET := env_var('HOME')
 BIN_TARGET := "/usr/local/bin"
 
