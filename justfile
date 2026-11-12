@@ -109,3 +109,23 @@ load-agents:
             && echo "✅ $label loaded" \
             || echo "❌ $label failed to load"; \
     done
+
+# Merge vscode/settings.json into the VSCode user settings (repo values win)
+vscode:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    dst="{{ HOME_TARGET }}/Library/Application Support/Code/User/settings.json"
+    mkdir -p "$(dirname "$dst")"
+    [ -s "$dst" ] || echo '{}' > "$dst"
+    current=$(hjson -preserveKeyOrder -j "$dst" | jq --indent 4 .)
+    merged=$(jq --indent 4 -s '.[0] * .[1]' <(echo "$current") <(hjson -j vscode/settings.json))
+    if [ "$merged" = "$current" ]; then
+        echo "✅ VSCode settings already up to date"
+        exit 0
+    fi
+    cp "$dst" "$dst.bak"
+    echo "$merged" > "$dst"
+    echo "✅ Merged vscode/settings.json into $dst (backup: $dst.bak)"
+    jq -rn --argjson old "$current" --argjson new "$merged" \
+        '$new | to_entries[] | .key as $k | select($old[$k] != .value)
+         | "  \($k): \(if $old | has($k) then $old[$k] | tojson else "<unset>" end) -> \(.value | tojson)"'

@@ -22,3 +22,4 @@ starship
 bat
 fclones
 rclone
+hjson

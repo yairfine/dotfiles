@@ -1,0 +1,30 @@
+{
+    "editor.fontSize": 15,
+    "terminal.integrated.fontSize": 13,
+    "clangd.arguments": [
+        "--enable-config",
+        "--background-index",
+        "--clang-tidy"
+    ],
+    "workbench.colorTheme": "Light+",
+    "editor.inlayHints.enabled": "on",
+    "cSpell.userWords": [
+        "asmb",
+        "calib",
+        "cheatsheet",
+        "coeffs",
+        "ioreg",
+        "lldb",
+        "Trackpad",
+        "YAIR"
+    ],
+    "workbench.secondarySideBar.defaultVisibility": "hidden",
+    "terminal.integrated.suggest.enabled": false,
+    "terminal.integrated.stickyScroll.enabled": false,
+    "gitlens.rebaseEditor.openOnPausedRebase": false,
+    "terminal.integrated.suggest.quickSuggestions": {
+        "commands": "on",
+        "arguments": "on",
+        "unknown": "off"
+    }
+}
