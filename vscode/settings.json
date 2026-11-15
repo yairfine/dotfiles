@@ -26,5 +26,10 @@
         "commands": "on",
         "arguments": "on",
         "unknown": "off"
-    }
+    },
+    "diffEditor.hideUnchangedRegions.enabled": true,
+    "scm.repositories.selectionMode": "single",
+    "scm.repositories.sortOrder": "name",
+    "scm.showActionButton": false,
+    "scm.showInputActionButton": false
 }
