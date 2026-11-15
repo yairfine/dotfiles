@@ -45,6 +45,7 @@ git config --global --unset alias.fixup
 git config --global --unset alias.ff
 git config --global --unset alias.unstage
 git config --global --unset alias.reseth
+git config --global --unset alias.resets
 git config --global --unset alias.resetu
 git config --global --unset alias.diffu
 git config --global --unset alias.cleanlfs
